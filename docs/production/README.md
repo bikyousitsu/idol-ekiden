@@ -9,6 +9,7 @@
 | 参加者説明 | `participant-guide.md` |
 | 運営配置・入力・進行 | `operations-manual.md` |
 | 仕事・スキャンダル・合同ロケ | `event-cards.md` |
+| ニュースの編集・個別URL・LINE投稿 | `news-editorial-guide.md` |
 | ニュース原案6種類 | `news-templates.md` |
 | 司会・会場・演目台本 | `staff-scripts.md` |
 | ツアーお題・クイズ解答・競技基準 | `stage-task-book.md` |

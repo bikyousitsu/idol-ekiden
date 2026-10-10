@@ -1,3 +1,3 @@
-import Dashboard from './dashboard';
+import Portal from './portal';
 export const dynamic='force-dynamic';
-export default function Home(){return <Dashboard/>;}
+export default function Home(){return <Portal/>;}

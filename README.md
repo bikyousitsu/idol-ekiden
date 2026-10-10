@@ -49,9 +49,12 @@ PDFは閲覧・印刷用です。説明資料の文字や表を編集する場�
 ## ダッシュボード
 
 - [ダッシュボードの実装](apps/dashboard/)
-- [主催者確認用サイト](https://idol-ekiden-control.coolmyna3.chatgpt.site)：**本人限定の確認版として配信済み**です。参加者向けの公開・共有は、アクセス設定と実データの同期を確認してから行います。
+- [参加者ページ](https://idol-ekiden-control.coolmyna3.chatgpt.site)：ログイン不要。ファン数・GB・確認済みニュースを公開。
+- [運営専用ページ](https://idol-ekiden-control.coolmyna3.chatgpt.site/admin)：ログインと運営権限が必要。採点・報酬・台帳・記事を編集。
+- [ニュースの練習版](https://idol-ekiden-control.coolmyna3.chatgpt.site/demo)／[個別記事の例](https://idol-ekiden-control.coolmyna3.chatgpt.site/news/demo-collab?event=practice)
+- [記事編集・LINE投稿の手順](docs/production/news-editorial-guide.md)：予告はチーム別、16:50の結果記事は全体へ。森本が見出しとURLを手動投稿。
 
-画面では各グループのファン数・順位・GB残高、ニュース、予定を確認し、運営が採点・仕事・購入・スキャンダル対応を記録する構成です。データの共有、同時更新、運営権限、入力の訂正、通信が切れた場合の復旧は、本番前の通し試験で確認します。
+参加者ページと運営画面を分離しました。ニュースは一記事一URLで、要約・本文・架空の応援／考察／辛口コメントを掲載します。コメントの反応数は架空の演出で、得点に影響しません。運営は専用画面から採点・仕事・購入・スキャンダル対応を記録します。データの共有、同時更新、運営権限、入力の訂正、通信が切れた場合の復旧は、本番前の通し試験で確認します。
 
 ルールを変更するときは、まず `data/rules.json` と共通ルールを更新し、計算・画面・説明資料・印刷物・シミュレーションの順にそろえます。
 

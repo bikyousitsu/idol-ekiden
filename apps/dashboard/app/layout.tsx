@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import "./ekiden.css";
+import "./news.css";
 
 export const metadata: Metadata = {
-  title: "アイドル駅伝｜KEITEKI RECORDS",
-  description: "6グループのファン数・GB・芸能ニュースと運営入力。恵迪寮祭アイドル駅伝。",
+  title: "ケイテキ!ニュース | アイドル駅伝",
+  description: "恵迪寮祭アイドル駅伝。6グループのファン数・GB・架空の芸能ニュース。",
+  robots: {index:false,follow:false},
+  referrer: "no-referrer",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
