@@ -1,0 +1,26 @@
+{
+  "scope": "配信済み本人限定サイトへの読取りのみ。本人ログイン・運営書込み・参加者アクセスは別途確認。",
+  "checks": [
+    {
+      "event": "practice",
+      "status": 200,
+      "groups": 6,
+      "initial": "架空の練習サンプル",
+      "phase": "tour"
+    },
+    {
+      "event": "rehearsal",
+      "status": 200,
+      "groups": 6,
+      "initial": "600GB・0ファン",
+      "phase": "preparing"
+    },
+    {
+      "event": "production",
+      "status": 200,
+      "groups": 6,
+      "initial": "600GB・0ファン",
+      "phase": "preparing"
+    }
+  ]
+}

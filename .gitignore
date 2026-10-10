@@ -1,8 +1,11 @@
 .env
 .env.*
 !.env.example
-data/
+/data/*
 node_modules/
 *.log
 .DS_Store
 Thumbs.db
+
+!/data/rules.json
+*.tsbuildinfo

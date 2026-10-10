@@ -1,0 +1,358 @@
+{
+  "version": "2026-10-11-draft-1",
+  "kind": "仮想収支と仮定歩行時間の確認。実機/実測の保証ではない",
+  "outcomes": [
+    {
+      "id": "G2",
+      "name": "全部使って話題化",
+      "missionIds": [
+        "work1",
+        "work2",
+        "work3",
+        "sponsor",
+        "fanclub",
+        "collab"
+      ],
+      "buys": {
+        "ad": 5,
+        "specialAd": 1,
+        "costume": 2,
+        "lesson": 1,
+        "fanGoods": 3,
+        "decoration": 2
+      },
+      "scandal": "publicity",
+      "sns": 4,
+      "tour": 72,
+      "final": 48,
+      "gb": 300,
+      "preFinalFans": 1000000,
+      "fans": 1480000,
+      "buyCost": 2100,
+      "adFans": 160000,
+      "income": 500
+    },
+    {
+      "id": "G6",
+      "name": "スポンサーなし・宣伝",
+      "missionIds": [
+        "work1",
+        "work2",
+        "work3",
+        "collab"
+      ],
+      "buys": {
+        "ad": 5,
+        "specialAd": 1,
+        "costume": 1,
+        "lesson": 1,
+        "fanGoods": 1,
+        "decoration": 1
+      },
+      "scandal": "publicity",
+      "sns": 4,
+      "tour": 72,
+      "final": 44,
+      "gb": 0,
+      "preFinalFans": 980000,
+      "fans": 1420000,
+      "buyCost": 1500,
+      "adFans": 160000,
+      "income": 0
+    },
+    {
+      "id": "G3",
+      "name": "演技準備を優先",
+      "missionIds": [
+        "work1",
+        "sponsor",
+        "fanclub",
+        "collab"
+      ],
+      "buys": {
+        "ad": 1,
+        "costume": 2,
+        "lesson": 1,
+        "fanGoods": 2,
+        "decoration": 2
+      },
+      "scandal": "apology",
+      "sns": 4,
+      "tour": 72,
+      "final": 52,
+      "gb": 600,
+      "preFinalFans": 850000,
+      "fans": 1370000,
+      "buyCost": 1400,
+      "adFans": 20000,
+      "income": 500
+    },
+    {
+      "id": "G4",
+      "name": "広告なし・騒動失敗",
+      "missionIds": [
+        "work1",
+        "work2",
+        "work3",
+        "sponsor",
+        "fanclub",
+        "collab"
+      ],
+      "buys": {
+        "costume": 2,
+        "lesson": 1,
+        "fanGoods": 3,
+        "decoration": 2
+      },
+      "scandal": "failed",
+      "sns": 4,
+      "tour": 72,
+      "final": 56,
+      "gb": 1000,
+      "preFinalFans": 780000,
+      "fans": 1340000,
+      "buyCost": 1400,
+      "adFans": 0,
+      "income": 500
+    },
+    {
+      "id": "G1",
+      "name": "堅実な広報",
+      "missionIds": [
+        "work1",
+        "work2",
+        "work3",
+        "sponsor",
+        "fanclub",
+        "collab"
+      ],
+      "buys": {
+        "ad": 3,
+        "specialAd": 1,
+        "costume": 1,
+        "lesson": 1,
+        "fanGoods": 1,
+        "decoration": 1
+      },
+      "scandal": "cover",
+      "sns": 4,
+      "tour": 72,
+      "final": 36,
+      "gb": 900,
+      "preFinalFans": 930000,
+      "fans": 1290000,
+      "buyCost": 1300,
+      "adFans": 120000,
+      "income": 500
+    },
+    {
+      "id": "G5",
+      "name": "資金温存・任意仕事少",
+      "missionIds": [
+        "work1",
+        "sponsor",
+        "fanclub"
+      ],
+      "buys": {},
+      "scandal": "ignored",
+      "sns": 0,
+      "tour": 72,
+      "final": 30,
+      "gb": 1700,
+      "preFinalFans": 710000,
+      "fans": 1010000,
+      "buyCost": 0,
+      "adFans": 0,
+      "income": 500
+    }
+  ],
+  "routes": [
+    {
+      "id": "G1",
+      "route": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "FREE",
+        "FREE"
+      ],
+      "lastVenue": "D",
+      "end": "16:20",
+      "returnExample": "16:25",
+      "buyMinutes": 55,
+      "finalPrepMinutes": 30,
+      "northToSouth": false,
+      "firstSlot": "15:30"
+    },
+    {
+      "id": "G2",
+      "route": [
+        "FREE",
+        "A",
+        "B",
+        "C",
+        "D",
+        "FREE"
+      ],
+      "lastVenue": "D",
+      "end": "16:35",
+      "returnExample": "16:40",
+      "buyMinutes": 40,
+      "finalPrepMinutes": 30,
+      "northToSouth": false,
+      "firstSlot": "15:45"
+    },
+    {
+      "id": "G3",
+      "route": [
+        "FREE",
+        "FREE",
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "lastVenue": "D",
+      "end": "16:50",
+      "returnExample": "16:55",
+      "buyMinutes": 25,
+      "finalPrepMinutes": 30,
+      "northToSouth": false,
+      "firstSlot": "16:00"
+    },
+    {
+      "id": "G4",
+      "route": [
+        "D",
+        "FREE",
+        "FREE",
+        "A",
+        "B",
+        "C"
+      ],
+      "lastVenue": "C",
+      "end": "16:50",
+      "returnExample": "17:00",
+      "buyMinutes": 20,
+      "finalPrepMinutes": 30,
+      "northToSouth": true,
+      "firstSlot": "15:30"
+    },
+    {
+      "id": "G5",
+      "route": [
+        "C",
+        "D",
+        "FREE",
+        "FREE",
+        "A",
+        "B"
+      ],
+      "lastVenue": "B",
+      "end": "16:50",
+      "returnExample": "17:05",
+      "buyMinutes": 15,
+      "finalPrepMinutes": 25,
+      "northToSouth": true,
+      "firstSlot": "15:30"
+    },
+    {
+      "id": "G6",
+      "route": [
+        "B",
+        "C",
+        "D",
+        "FREE",
+        "FREE",
+        "A"
+      ],
+      "lastVenue": "A",
+      "end": "16:50",
+      "returnExample": "17:10",
+      "buyMinutes": 10,
+      "finalPrepMinutes": 20,
+      "northToSouth": true,
+      "firstSlot": "15:30"
+    }
+  ],
+  "ledgerGap": [
+    {
+      "time": "15:35",
+      "values": [
+        180000,
+        0,
+        0,
+        180000,
+        180000,
+        180000
+      ],
+      "gap": 180000
+    },
+    {
+      "time": "15:50",
+      "values": [
+        360000,
+        180000,
+        0,
+        180000,
+        360000,
+        360000
+      ],
+      "gap": 360000
+    },
+    {
+      "time": "16:05",
+      "values": [
+        540000,
+        360000,
+        180000,
+        180000,
+        360000,
+        540000
+      ],
+      "gap": 360000
+    },
+    {
+      "time": "16:20",
+      "values": [
+        720000,
+        540000,
+        360000,
+        360000,
+        360000,
+        540000
+      ],
+      "gap": 360000
+    },
+    {
+      "time": "16:35",
+      "values": [
+        720000,
+        720000,
+        540000,
+        540000,
+        540000,
+        540000
+      ],
+      "gap": 180000
+    },
+    {
+      "time": "16:50",
+      "values": [
+        720000,
+        720000,
+        720000,
+        720000,
+        720000,
+        720000
+      ],
+      "gap": 0
+    }
+  ],
+  "maxMissionGb": 1300,
+  "maxIncome": 500,
+  "maxProductCost": 2100,
+  "moneyCap": 2400,
+  "maxAdFans": 160000
+}

@@ -1,0 +1,347 @@
+{
+  "version": "2026-10-11-draft-1",
+  "status": "試運転用の仮ルール",
+  "confirmed": [
+    "6チーム",
+    "15:00開始",
+    "17:30武道館開演",
+    "ツアー1会場1チーム",
+    "武道館5項目60点",
+    "演目重複可",
+    "スキャンダル全チーム1回",
+    "全チームのGB・ファン数・順位を全体公開",
+    "LINEは運営が確認して手動投稿"
+  ],
+  "teams": [
+    {
+      "id": "G1",
+      "name": "グループ1",
+      "color": "#FF477E",
+      "initialGb": 600
+    },
+    {
+      "id": "G2",
+      "name": "グループ2",
+      "color": "#29C7DF",
+      "initialGb": 600
+    },
+    {
+      "id": "G3",
+      "name": "グループ3",
+      "color": "#F4CB52",
+      "initialGb": 600
+    },
+    {
+      "id": "G4",
+      "name": "グループ4",
+      "color": "#9D7DEA",
+      "initialGb": 600
+    },
+    {
+      "id": "G5",
+      "name": "グループ5",
+      "color": "#61C798",
+      "initialGb": 600
+    },
+    {
+      "id": "G6",
+      "name": "グループ6",
+      "color": "#F7934C",
+      "initialGb": 600
+    }
+  ],
+  "times": {
+    "start": "15:00",
+    "tourStart": "15:30",
+    "tourEnd": "17:00",
+    "scandalAnnounce": "16:00",
+    "scandalDeadline": "16:45",
+    "scandalPublish": "16:50",
+    "incomeSettlement": "17:00",
+    "actDeadline": "17:10",
+    "tradeDeadline": "17:20",
+    "showStart": "17:30",
+    "showEnd": "18:00"
+  },
+  "routes": [
+    [
+      "A",
+      "B",
+      "C",
+      "D",
+      "FREE",
+      "FREE"
+    ],
+    [
+      "FREE",
+      "A",
+      "B",
+      "C",
+      "D",
+      "FREE"
+    ],
+    [
+      "FREE",
+      "FREE",
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    [
+      "D",
+      "FREE",
+      "FREE",
+      "A",
+      "B",
+      "C"
+    ],
+    [
+      "C",
+      "D",
+      "FREE",
+      "FREE",
+      "A",
+      "B"
+    ],
+    [
+      "B",
+      "C",
+      "D",
+      "FREE",
+      "FREE",
+      "A"
+    ]
+  ],
+  "venues": [
+    {
+      "id": "A",
+      "name": "クラーク像前",
+      "theme": "お笑い",
+      "staff": "たけ",
+      "maxima": [
+        5,
+        5,
+        5,
+        10
+      ],
+      "criteria": [
+        "おもしろさ",
+        "瞬発力",
+        "古参ファンの盛り上げ",
+        "ビジュアル"
+      ]
+    },
+    {
+      "id": "B",
+      "name": "博物館前",
+      "theme": "クイズ",
+      "staff": "佐伯",
+      "maxima": [
+        5,
+        5,
+        5,
+        10
+      ],
+      "criteria": [
+        "かしこさ",
+        "面白回答",
+        "古参ファン能力",
+        "ビジュアル"
+      ]
+    },
+    {
+      "id": "C",
+      "name": "工学部噴水前",
+      "theme": "スポーツ",
+      "staff": "ぷし",
+      "maxima": [
+        5,
+        5,
+        5,
+        10
+      ],
+      "criteria": [
+        "8の字跳び",
+        "握力チャレンジ",
+        "番組中の面白さ",
+        "ビジュアル"
+      ]
+    },
+    {
+      "id": "D",
+      "name": "18条ステージ",
+      "theme": "ダンス",
+      "staff": "やり",
+      "maxima": [
+        5,
+        5,
+        5,
+        10
+      ],
+      "criteria": [
+        "リズム感",
+        "ファンの熱量",
+        "やりきり具合",
+        "ビジュアル"
+      ]
+    }
+  ],
+  "final": {
+    "maxima": [
+      10,
+      15,
+      10,
+      10,
+      15
+    ],
+    "criteria": [
+      "ファンの盛り上がり",
+      "ビジュアル",
+      "面白さ",
+      "アイドル全員が輝いているか",
+      "グループカラーの装飾"
+    ],
+    "judges": 3,
+    "fanPerPoint": 10000
+  },
+  "products": [
+    {
+      "id": "ad",
+      "name": "架空の宣伝",
+      "price": 100,
+      "fans": 20000,
+      "max": 5
+    },
+    {
+      "id": "specialAd",
+      "name": "スペシャル宣伝",
+      "price": 200,
+      "fans": 60000,
+      "max": 1,
+      "proofRequired": true
+    },
+    {
+      "id": "costume",
+      "name": "衣装素材セット",
+      "price": 200,
+      "fans": 0,
+      "max": 2
+    },
+    {
+      "id": "lesson",
+      "name": "武道館レッスン",
+      "price": 300,
+      "fans": 0,
+      "max": 1
+    },
+    {
+      "id": "fanGoods",
+      "name": "推し活グッズ",
+      "price": 100,
+      "fans": 0,
+      "max": 3
+    },
+    {
+      "id": "decoration",
+      "name": "ステージ装飾セット",
+      "price": 200,
+      "fans": 0,
+      "max": 2
+    }
+  ],
+  "missions": [
+    {
+      "id": "work1",
+      "name": "古参ファン営業①",
+      "gb": 200,
+      "fans": 0,
+      "max": 1
+    },
+    {
+      "id": "work2",
+      "name": "古参ファン営業②",
+      "gb": 200,
+      "fans": 0,
+      "max": 1
+    },
+    {
+      "id": "work3",
+      "name": "古参ファン営業③",
+      "gb": 200,
+      "fans": 0,
+      "max": 1
+    },
+    {
+      "id": "sponsor",
+      "name": "スポンサーCM",
+      "gb": 300,
+      "fans": 20000,
+      "max": 1
+    },
+    {
+      "id": "fanclub",
+      "name": "ファンクラブ開設",
+      "gb": 100,
+      "fans": 0,
+      "max": 1
+    },
+    {
+      "id": "collab",
+      "name": "合同ロケ（動画リレー代替可）",
+      "gb": 300,
+      "fans": 30000,
+      "max": 1
+    }
+  ],
+  "income": {
+    "sponsorGb": 200,
+    "fanclubGbPer100k": 50,
+    "fanclubCapGb": 300,
+    "settlementCount": 1,
+    "settlementTime": "17:00"
+  },
+  "scandal": {
+    "max": 1,
+    "coverGb": 200,
+    "apologyFans": 20000,
+    "publicityFans": 30000,
+    "failedFans": -30000,
+    "ignoredFans": -30000,
+    "deadline": "16:45",
+    "publicAt": "16:50",
+    "topics": [
+      "寮食を二重に食べていた疑惑",
+      "自分のグッズを買い占めていた疑惑",
+      "スポンサーの商品名を間違えた疑惑",
+      "古参ファンに荷物を全部持たせていた疑惑",
+      "楽屋で決めポーズだけ練習していた疑惑",
+      "ライバルのうちわを隠し持っていた疑惑"
+    ]
+  },
+  "caps": {
+    "idolSnsMinutes": 15,
+    "fanReportsPerVenue": 1,
+    "extraSnsFansMax": 40000
+  },
+  "assumptions": [
+    "15分枠＝実施5分＋移動10分は仮案。徒歩実測が必要",
+    "GB・報酬・価格・スポンサーの一括17:00入金は仮案",
+    "衣装・装飾は購入数で自動加点せず実物を評価",
+    "司会交代で同時11人、会場個人配置は仮案",
+    "余裕のない移動区間では任意ミッションを省く",
+    "開催日・グループ名・色の正式割当は未確定"
+  ],
+  "sns": {
+    "fansPerAcceptedPost": 10000,
+    "maxBonusPostsPerTeam": 4,
+    "idolCooldownMinutes": 15,
+    "fanReportPerVenue": 1
+  },
+  "tourClearGb": 0,
+  "tieBreak": [
+    "finalTotal",
+    "finalCriteria3",
+    "coDebut"
+  ]
+}
