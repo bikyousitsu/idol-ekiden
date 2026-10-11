@@ -15,6 +15,7 @@
 | ツアーお題・クイズ解答・競技基準 | `stage-task-book.md` |
 | 実費10,000円の調達枠 | `procurement-budget.md` |
 | 確認事項・リハ・当日チェック | `rehearsal-checklist.md` |
+| 所有者登録・スタッフ案内・15分の動作確認 | `setup-and-smoke-check.md` |
 | 6チーム仮想進行・移動差 | `balance-review.md` |
 | シミュレーション実行 | `../../scripts/simulate.mjs` |
 | 紙の採点・受付・カード・案内 | `../../materials/print/` |

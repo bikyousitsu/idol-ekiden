@@ -1,0 +1,13 @@
+import { getOperatorUser } from '../../../../lib/operator-auth';
+import { config,response,role,sameOrigin } from '../../../../lib/event-store';
+import { staffId,newPasscode,newSalt,passcodeHash } from '../../../../lib/staff-crypto.mjs';
+export const dynamic='force-dynamic';
+export async function GET(){const user=await getOperatorUser();if(!user)return response({error:'ログインしてください'},401);if(await role(user.userId)!=='owner')return response({error:'管理者のみ確認できます'},403);const rows=await config.DB.prepare('SELECT a.id,a.display_name,a.active,a.updated_at,o.role FROM staff_accounts a LEFT JOIN operators o ON o.user_id=\'staff:\'||a.id ORDER BY a.id').all();return response({staff:rows.results});}
+export async function POST(req:Request){try{sameOrigin(req);const user=await getOperatorUser();if(!user)return response({error:'ログインしてください'},401);if(await role(user.userId)!=='owner')return response({error:'管理者のみ発行できます'},403);const data:any=await req.json(),id=staffId(data.id),old=await config.DB.prepare('SELECT id FROM staff_accounts WHERE id=?').bind(id).first();const operatorId='staff:'+id;
+ if(data.command==='disable'){if(user.userId===operatorId)throw Error('操作中の自分のIDは停止できません');await config.DB.batch([config.DB.prepare('UPDATE staff_accounts SET active=0,updated_at=? WHERE id=?').bind(new Date().toISOString(),id),config.DB.prepare('DELETE FROM staff_sessions WHERE staff_id=?').bind(id)]);return response({ok:true});}
+ if(!['issue','reset'].includes(data.command)||data.command==='issue'&&old||data.command==='reset'&&!old)throw Error('IDの新規発行・再発行を確認してください');
+ if(typeof data.name!=='string'||!data.name.trim()||data.name.length>30||!['editor','owner'].includes(data.role))throw Error('担当名と権限を確認してください');
+ const passcode=newPasscode(),salt=newSalt(),hash=await passcodeHash(passcode,salt),now=new Date().toISOString();
+ const statements=[data.command==='issue'?config.DB.prepare('INSERT INTO staff_accounts(id,display_name,pass_hash,salt,active,created_at,updated_at) VALUES(?,?,?,?,1,?,?)').bind(id,data.name.trim(),hash,salt,now,now):config.DB.prepare('UPDATE staff_accounts SET display_name=?,pass_hash=?,salt=?,active=1,updated_at=? WHERE id=?').bind(data.name.trim(),hash,salt,now,id),config.DB.prepare('INSERT INTO operators(user_id,role,created_at) VALUES(?,?,?) ON CONFLICT(user_id) DO UPDATE SET role=excluded.role').bind(operatorId,data.role,now),config.DB.prepare('DELETE FROM staff_sessions WHERE staff_id=?').bind(id),config.DB.prepare('DELETE FROM staff_login_attempts WHERE id=?').bind(id)];
+ await config.DB.batch(statements);return response({ok:true,id,name:data.name.trim(),role:data.role,passcode});
+ }catch(e){return response({error:(e as Error).message},400);}}

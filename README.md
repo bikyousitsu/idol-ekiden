@@ -50,7 +50,8 @@ PDFは閲覧・印刷用です。説明資料の文字や表を編集する場�
 
 - [ダッシュボードの実装](apps/dashboard/)
 - [参加者ページ](https://idol-ekiden-control.coolmyna3.chatgpt.site)：ログイン不要。ファン数・GB・確認済みニュースを公開。
-- [運営専用ページ](https://idol-ekiden-control.coolmyna3.chatgpt.site/admin)：ログインと運営権限が必要。採点・報酬・台帳・記事を編集。
+- [運営専用ページ](https://idol-ekiden-control.coolmyna3.chatgpt.site/admin)：担当別の運営ID＋パスコードで採点・報酬・記事を編集。スタッフのChatGPT登録は不要。
+- [スタッフのログイン入口](https://idol-ekiden-control.coolmyna3.chatgpt.site/admin/login)／[ID発行・15分の動作確認手順](docs/production/setup-and-smoke-check.md)：管理者が「スタッフID」から発行し、本人へ個別に渡す。
 - [ニュースの練習版](https://idol-ekiden-control.coolmyna3.chatgpt.site/demo)／[個別記事の例](https://idol-ekiden-control.coolmyna3.chatgpt.site/news/demo-collab?event=practice)
 - [記事編集・LINE投稿の手順](docs/production/news-editorial-guide.md)：予告はチーム別、16:50の結果記事は全体へ。森本が見出しとURLを手動投稿。
 
