@@ -92,7 +92,7 @@ export function scandalResultDraft(team, time = '16:50') {
       headline: `${name}、${angle[0]}　架空の掲載予告への結果を公開`,
       summary: `${name}への架空トピック「${scandal.topic}」の対応結果。運営が確定したファン数の変動は${delta}。`,
       paragraphs: [
-        `${name}に届いたのは「${scandal.topic}」という架空の掲載予告。これは実際の疑惑や個人の噂を指すものではなく、全グループが一度ずつ参加する企画のお題である。`,
+        `${name}に届いたのは「${scandal.topic}」という架空の掲載予告。これは実際の疑惑や個人の噂を指すものではなく、途中順位で対象に選ばれたアイドル役への企画のお題である。`,
         angle[1],
         `運営が確定したファン数の変動は${delta}。ファン残高の下限はゼロ。現在の残高と順位は、参加者用ダッシュボードで確認できる。`,
         '本人の発言・実演内容を詳しく載せる場合は、運営が確認した内容だけを追記する。本記事のコメントや賛同数によって、得点・GB・ファン数を変更しない。',
@@ -123,7 +123,7 @@ export function editorialDraft(action, state, legacy) {
 
   if (action.kind === 'scandal_open') {
     content = article({
-      headline: `【運営プレビュー】${name}に掲載予告　対応は16:45まで`,
+      headline: `【運営プレビュー】${name}に掲載予告　対応は${state.schedule?.scandalDeadline||'16:45'}まで`,
       summary: 'これは対象チームに個別で伝える掲載予告です。参加者用のニュース一覧・記事ページには公開しません。',
       paragraphs: [
         `週刊ケイテキ編集部から${name}に、ゲーム内の架空トピック「${team?.scandal?.topic || '指定の掲載予告'}」について連絡が届いた。これは実際の不祥事や個人の噂ではなく、全組が一度ずつ参加するイベントのお題である。`,

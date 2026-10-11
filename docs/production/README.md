@@ -8,7 +8,9 @@
 | 共通ルール・価格 | `common-rules.md` |
 | 参加者説明 | `participant-guide.md` |
 | 運営配置・入力・進行 | `operations-manual.md` |
-| 仕事・スキャンダル・合同ロケ | `event-cards.md` |
+| 労働・スキャンダルの具体案 | `event-proposals.md` |
+| 最新の画面変更・使い方 | `latest-update.md` |
+| 労働・スキャンダル・合同ロケ | `event-cards.md` |
 | ニュースの編集・個別URL・LINE投稿 | `news-editorial-guide.md` |
 | ニュース原案6種類 | `news-templates.md` |
 | 司会・会場・演目台本 | `staff-scripts.md` |

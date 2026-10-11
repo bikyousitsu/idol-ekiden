@@ -10,12 +10,12 @@ const backup=initial.raw;
 try {
  let r=await post({command:'action',version:initial.version,action:{kind:'phase',value:'tour',id:'api-test-phase'}},{'Content-Type':'application/json',Origin:base.origin});assert.equal(r.status,401);checks.push('未認証の書込みを拒否');
  r=await post({command:'teams',version:initial.version,teams:backup.teams},{...headers,Origin:'https://example.invalid'});assert([400,403].includes(r.status));checks.push('別サイトからの書込みを拒否');
- r=await post({command:'import',version:initial.version,state:{...backup,actions:[],news:[]}});assert.equal(r.status,200);
+ r=await post({command:'import',version:initial.version,state:{...backup,legacyAllScandals:true,actions:[],news:[]}});assert.equal(r.status,200);
  let s=await get();r=await post({command:'action',version:s.version,action:{kind:'phase',value:'tour',id:'api-test-phase',time:'15:00'}});assert.equal(r.status,200);
  const stale=s.version;s=await get();assert.equal(s.phase,'tour');assert.equal(s.raw.actions.length,1);checks.push('台帳保存後、別リクエストでも復元');
  r=await post({command:'teams',version:stale,teams:backup.teams});assert.equal(r.status,409);checks.push('古い版の同時入力を拒否');
- r=await post({command:'action',version:s.version,action:{kind:'mission',teamId:'G1',missionId:'work1',id:'api-test-work',time:'15:30'}});assert.equal(r.status,200);s=await get();assert.equal(s.teams.find(t=>t.id==='G1').gb,800);checks.push('報酬が共有残高に反映');
- r=await post({command:'action',version:s.version,action:{kind:'mission',teamId:'G1',missionId:'work1',id:'api-test-work',time:'15:30'}});assert.equal(r.status,400);assert.equal((await get()).teams.find(t=>t.id==='G1').gb,800);checks.push('同じ操作の再送で二重入金しない');
+ r=await post({command:'action',version:s.version,action:{kind:'mission',teamId:'G1',missionId:'otagei',id:'api-test-work',time:'15:30'}});assert.equal(r.status,200);s=await get();assert.equal(s.teams.find(t=>t.id==='G1').gb,800);checks.push('報酬が共有残高に反映');
+ r=await post({command:'action',version:s.version,action:{kind:'mission',teamId:'G1',missionId:'otagei',id:'api-test-work',time:'15:30'}});assert.equal(r.status,400);assert.equal((await get()).teams.find(t=>t.id==='G1').gb,800);checks.push('同じ操作の再送で二重入金しない');
  r=await post({command:'action',version:s.version,action:{kind:'scandal_open',teamId:'G1',id:'api-test-scandal',time:'16:00'}});assert.equal(r.status,200);s=await get();const secret=s.raw.news.find(n=>n.private);assert(secret);
  async function articlePost(body){const r=await fetch(new URL('/api/admin/articles?event=rehearsal',base),{method:'POST',headers,body:JSON.stringify(body)});return {status:r.status,body:await r.json()};}
  const secretInput={...secret,revision:secret.revision||0,status:'publish'};

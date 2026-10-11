@@ -135,3 +135,5 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.attention-status,.attention-card{padding:14px 18px;border:1px solid #755ab4;border-radius:12px;background:#241936;color:#fff}.attention-status{margin:12px 0}.attention-card p{line-height:1.7}

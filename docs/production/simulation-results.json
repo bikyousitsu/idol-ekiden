@@ -1,14 +1,12 @@
 {
-  "version": "2026-10-11-draft-1",
+  "version": "2026-10-11-draft-3",
   "kind": "仮想収支と仮定歩行時間の確認。実機/実測の保証ではない",
   "outcomes": [
     {
       "id": "G2",
       "name": "全部使って話題化",
       "missionIds": [
-        "work1",
-        "work2",
-        "work3",
+        "otagei",
         "sponsor",
         "fanclub",
         "collab"
@@ -18,53 +16,51 @@
         "specialAd": 1,
         "costume": 2,
         "lesson": 1,
-        "fanGoods": 3,
+        "fanGoods": 2,
         "decoration": 2
       },
-      "scandal": "publicity",
+      "scandal": "none",
       "sns": 4,
       "tour": 72,
       "final": 48,
-      "gb": 300,
-      "preFinalFans": 1000000,
-      "fans": 1480000,
-      "buyCost": 2100,
+      "gb": 0,
+      "preFinalFans": 970000,
+      "fans": 1450000,
+      "buyCost": 2000,
       "adFans": 160000,
       "income": 500
     },
     {
-      "id": "G6",
-      "name": "スポンサーなし・宣伝",
+      "id": "G4",
+      "name": "広告なし・演技優先",
       "missionIds": [
-        "work1",
-        "work2",
-        "work3",
+        "otagei",
+        "sponsor",
+        "fanclub",
         "collab"
       ],
       "buys": {
-        "ad": 5,
-        "specialAd": 1,
-        "costume": 1,
+        "costume": 2,
         "lesson": 1,
-        "fanGoods": 1,
-        "decoration": 1
+        "fanGoods": 3,
+        "decoration": 2
       },
-      "scandal": "publicity",
+      "scandal": "none",
       "sns": 4,
       "tour": 72,
-      "final": 44,
-      "gb": 0,
-      "preFinalFans": 980000,
-      "fans": 1420000,
-      "buyCost": 1500,
-      "adFans": 160000,
-      "income": 0
+      "final": 56,
+      "gb": 600,
+      "preFinalFans": 810000,
+      "fans": 1370000,
+      "buyCost": 1400,
+      "adFans": 0,
+      "income": 500
     },
     {
       "id": "G3",
       "name": "演技準備を優先",
       "missionIds": [
-        "work1",
+        "otagei",
         "sponsor",
         "fanclub",
         "collab"
@@ -76,52 +72,47 @@
         "fanGoods": 2,
         "decoration": 2
       },
-      "scandal": "apology",
+      "scandal": "none",
       "sns": 4,
       "tour": 72,
       "final": 52,
       "gb": 600,
-      "preFinalFans": 850000,
-      "fans": 1370000,
+      "preFinalFans": 830000,
+      "fans": 1350000,
       "buyCost": 1400,
       "adFans": 20000,
       "income": 500
     },
     {
-      "id": "G4",
-      "name": "広告なし・騒動失敗",
+      "id": "G6",
+      "name": "スポンサーなし・衣装優先",
       "missionIds": [
-        "work1",
-        "work2",
-        "work3",
-        "sponsor",
-        "fanclub",
+        "otagei",
         "collab"
       ],
       "buys": {
-        "costume": 2,
-        "lesson": 1,
-        "fanGoods": 3,
-        "decoration": 2
+        "ad": 3,
+        "specialAd": 1,
+        "costume": 1,
+        "fanGoods": 1,
+        "decoration": 1
       },
-      "scandal": "failed",
+      "scandal": "none",
       "sns": 4,
       "tour": 72,
-      "final": 56,
-      "gb": 1000,
-      "preFinalFans": 780000,
-      "fans": 1340000,
-      "buyCost": 1400,
-      "adFans": 0,
-      "income": 500
+      "final": 44,
+      "gb": 100,
+      "preFinalFans": 910000,
+      "fans": 1350000,
+      "buyCost": 1000,
+      "adFans": 120000,
+      "income": 0
     },
     {
       "id": "G1",
       "name": "堅実な広報",
       "missionIds": [
-        "work1",
-        "work2",
-        "work3",
+        "otagei",
         "sponsor",
         "fanclub",
         "collab"
@@ -138,7 +129,7 @@
       "sns": 4,
       "tour": 72,
       "final": 36,
-      "gb": 900,
+      "gb": 500,
       "preFinalFans": 930000,
       "fans": 1290000,
       "buyCost": 1300,
@@ -147,20 +138,21 @@
     },
     {
       "id": "G5",
-      "name": "資金温存・任意仕事少",
+      "name": "資金温存・任意労働少",
       "missionIds": [
-        "work1",
+        "otagei",
         "sponsor",
         "fanclub"
       ],
       "buys": {},
-      "scandal": "ignored",
+      "scandal": "none",
+      "goodwill": true,
       "sns": 0,
       "tour": 72,
       "final": 30,
       "gb": 1700,
-      "preFinalFans": 710000,
-      "fans": 1010000,
+      "preFinalFans": 790000,
+      "fans": 1090000,
       "buyCost": 0,
       "adFans": 0,
       "income": 500
@@ -350,9 +342,9 @@
       "gap": 0
     }
   ],
-  "maxMissionGb": 1300,
+  "maxMissionGb": 900,
   "maxIncome": 500,
   "maxProductCost": 2100,
-  "moneyCap": 2400,
+  "moneyCap": 2000,
   "maxAdFans": 160000
 }

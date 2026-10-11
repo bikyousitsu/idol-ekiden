@@ -1,0 +1,8 @@
+import rules from './rules.json' with { type: 'json' };
+export const timeLabels={start:'記者会見・開始',tourStart:'ツアー開始',tourEnd:'ツアー終了',scandalAnnounce:'掲載予告',scandalDeadline:'スキャンダル対応締切',scandalPublish:'結果記事',incomeSettlement:'定期収入',actDeadline:'演目申告締切',tradeDeadline:'集合・取引締切',showStart:'武道館開演',showEnd:'終演'};
+export function toMinutes(t){if(typeof t!=='string'||!/^\d{2}:\d{2}$/.test(t))throw Error('時刻はHH:mmで入力してください');const [h,m]=t.split(':').map(Number);if(h>23||m>59)throw Error('時刻が不正です');return h*60+m;}
+export function timeAt(n){if(!Number.isInteger(n)||n<0||n>=1440)throw Error('日をまたぐ変更はできません');return `${String(Math.floor(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`;}
+export function validateSchedule(value){const s={...rules.times,...value};for(const k of Object.keys(rules.times))toMinutes(s[k]);const m=Object.fromEntries(Object.entries(s).map(([k,v])=>[k,toMinutes(v)]));if(!(m.start<m.tourStart&&m.tourStart<m.scandalAnnounce&&m.scandalAnnounce<m.scandalDeadline&&m.scandalDeadline<=m.scandalPublish&&m.scandalPublish<=m.incomeSettlement&&m.tourEnd<=m.actDeadline&&m.incomeSettlement<=m.actDeadline&&m.actDeadline<=m.tradeDeadline&&m.tradeDeadline<m.showStart&&m.showStart<m.showEnd&&m.tourEnd-m.tourStart>=90))throw Error('開始・締切・開演の順序とツアー90分を確認してください');return s;}
+export function shiftSchedule(s,start){s=validateSchedule(s);const delta=toMinutes(start)-toMinutes(s.start);return validateSchedule(Object.fromEntries(Object.entries(s).map(([k,v])=>[k,timeAt(toMinutes(v)+delta)])));}
+export const defaultSchedule=()=>({...rules.times});
+export const routeTime=(s,index)=>timeAt(toMinutes(s.tourStart)+index*15);
