@@ -1,12 +1,12 @@
 {
-  "version": "2026-10-11-draft-3",
+  "version": "2026-10-12-draft-6",
   "kind": "仮想収支と仮定歩行時間の確認。実機/実測の保証ではない",
   "outcomes": [
     {
       "id": "G2",
       "name": "全部使って話題化",
       "missionIds": [
-        "otagei",
+        "relay",
         "sponsor",
         "fanclub",
         "collab"
@@ -31,10 +31,38 @@
       "income": 500
     },
     {
+      "id": "G3",
+      "name": "演技準備を優先",
+      "missionIds": [
+        "relay",
+        "sponsor",
+        "fanclub",
+        "collab"
+      ],
+      "buys": {
+        "ad": 1,
+        "costume": 2,
+        "lesson": 1,
+        "fanGoods": 2,
+        "decoration": 2
+      },
+      "scandal": "none",
+      "goodwill": true,
+      "sns": 4,
+      "tour": 72,
+      "final": 52,
+      "gb": 600,
+      "preFinalFans": 880000,
+      "fans": 1400000,
+      "buyCost": 1400,
+      "adFans": 20000,
+      "income": 500
+    },
+    {
       "id": "G4",
       "name": "広告なし・演技優先",
       "missionIds": [
-        "otagei",
+        "relay",
         "sponsor",
         "fanclub",
         "collab"
@@ -57,37 +85,10 @@
       "income": 500
     },
     {
-      "id": "G3",
-      "name": "演技準備を優先",
-      "missionIds": [
-        "otagei",
-        "sponsor",
-        "fanclub",
-        "collab"
-      ],
-      "buys": {
-        "ad": 1,
-        "costume": 2,
-        "lesson": 1,
-        "fanGoods": 2,
-        "decoration": 2
-      },
-      "scandal": "none",
-      "sns": 4,
-      "tour": 72,
-      "final": 52,
-      "gb": 600,
-      "preFinalFans": 830000,
-      "fans": 1350000,
-      "buyCost": 1400,
-      "adFans": 20000,
-      "income": 500
-    },
-    {
       "id": "G6",
       "name": "スポンサーなし・衣装優先",
       "missionIds": [
-        "otagei",
+        "relay",
         "collab"
       ],
       "buys": {
@@ -112,7 +113,7 @@
       "id": "G1",
       "name": "堅実な広報",
       "missionIds": [
-        "otagei",
+        "relay",
         "sponsor",
         "fanclub",
         "collab"
@@ -140,19 +141,18 @@
       "id": "G5",
       "name": "資金温存・任意労働少",
       "missionIds": [
-        "otagei",
+        "relay",
         "sponsor",
         "fanclub"
       ],
       "buys": {},
       "scandal": "none",
-      "goodwill": true,
       "sns": 0,
       "tour": 72,
       "final": 30,
       "gb": 1700,
-      "preFinalFans": 790000,
-      "fans": 1090000,
+      "preFinalFans": 740000,
+      "fans": 1040000,
       "buyCost": 0,
       "adFans": 0,
       "income": 500
@@ -164,45 +164,9 @@
       "route": [
         "A",
         "B",
+        "労働バトル",
         "C",
-        "D",
-        "FREE",
-        "FREE"
-      ],
-      "lastVenue": "D",
-      "end": "16:20",
-      "returnExample": "16:25",
-      "buyMinutes": 55,
-      "finalPrepMinutes": 30,
-      "northToSouth": false,
-      "firstSlot": "15:30"
-    },
-    {
-      "id": "G2",
-      "route": [
-        "FREE",
-        "A",
-        "B",
-        "C",
-        "D",
-        "FREE"
-      ],
-      "lastVenue": "D",
-      "end": "16:35",
-      "returnExample": "16:40",
-      "buyMinutes": 40,
-      "finalPrepMinutes": 30,
-      "northToSouth": false,
-      "firstSlot": "15:45"
-    },
-    {
-      "id": "G3",
-      "route": [
-        "FREE",
-        "FREE",
-        "A",
-        "B",
-        "C",
+        "合同ロケ",
         "D"
       ],
       "lastVenue": "D",
@@ -211,16 +175,16 @@
       "buyMinutes": 25,
       "finalPrepMinutes": 30,
       "northToSouth": false,
-      "firstSlot": "16:00"
+      "firstSlot": "15:30"
     },
     {
-      "id": "G4",
+      "id": "G2",
       "route": [
-        "D",
-        "FREE",
-        "FREE",
-        "A",
         "B",
+        "A",
+        "労働バトル",
+        "D",
+        "合同ロケ",
         "C"
       ],
       "lastVenue": "C",
@@ -228,16 +192,16 @@
       "returnExample": "17:00",
       "buyMinutes": 20,
       "finalPrepMinutes": 30,
-      "northToSouth": true,
+      "northToSouth": false,
       "firstSlot": "15:30"
     },
     {
-      "id": "G5",
+      "id": "G3",
       "route": [
+        "合同ロケ",
         "C",
         "D",
-        "FREE",
-        "FREE",
+        "労働バトル",
         "A",
         "B"
       ],
@@ -247,16 +211,16 @@
       "buyMinutes": 15,
       "finalPrepMinutes": 25,
       "northToSouth": true,
-      "firstSlot": "15:30"
+      "firstSlot": "15:45"
     },
     {
-      "id": "G6",
+      "id": "G4",
       "route": [
-        "B",
-        "C",
+        "合同ロケ",
         "D",
-        "FREE",
-        "FREE",
+        "C",
+        "労働バトル",
+        "B",
         "A"
       ],
       "lastVenue": "A",
@@ -264,6 +228,42 @@
       "returnExample": "17:10",
       "buyMinutes": 10,
       "finalPrepMinutes": 20,
+      "northToSouth": true,
+      "firstSlot": "15:45"
+    },
+    {
+      "id": "G5",
+      "route": [
+        "C",
+        "労働バトル",
+        "A",
+        "B",
+        "D",
+        "合同ロケ"
+      ],
+      "lastVenue": "合同ロケ",
+      "end": "16:50",
+      "returnExample": "17:00",
+      "buyMinutes": 20,
+      "finalPrepMinutes": 30,
+      "northToSouth": false,
+      "firstSlot": "15:30"
+    },
+    {
+      "id": "G6",
+      "route": [
+        "D",
+        "労働バトル",
+        "B",
+        "A",
+        "C",
+        "合同ロケ"
+      ],
+      "lastVenue": "合同ロケ",
+      "end": "16:50",
+      "returnExample": "17:00",
+      "buyMinutes": 20,
+      "finalPrepMinutes": 30,
       "northToSouth": true,
       "firstSlot": "15:30"
     }
@@ -273,9 +273,9 @@
       "time": "15:35",
       "values": [
         180000,
-        0,
-        0,
         180000,
+        0,
+        0,
         180000,
         180000
       ],
@@ -285,47 +285,47 @@
       "time": "15:50",
       "values": [
         360000,
-        180000,
-        0,
-        180000,
         360000,
-        360000
+        180000,
+        180000,
+        180000,
+        180000
       ],
-      "gap": 360000
+      "gap": 180000
     },
     {
       "time": "16:05",
       "values": [
-        540000,
         360000,
-        180000,
-        180000,
         360000,
-        540000
+        360000,
+        360000,
+        360000,
+        360000
       ],
-      "gap": 360000
+      "gap": 0
     },
     {
       "time": "16:20",
       "values": [
-        720000,
+        540000,
         540000,
         360000,
         360000,
-        360000,
+        540000,
         540000
       ],
-      "gap": 360000
+      "gap": 180000
     },
     {
       "time": "16:35",
       "values": [
+        540000,
+        540000,
+        540000,
+        540000,
         720000,
-        720000,
-        540000,
-        540000,
-        540000,
-        540000
+        720000
       ],
       "gap": 180000
     },

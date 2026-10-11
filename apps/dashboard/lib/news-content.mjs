@@ -2,6 +2,7 @@
  * 運営が確認・編集してから公開する、架空ニュースの原稿。
  * state は calculate() の戻り値。得点・報酬を決める処理は持たない。
  */
+import { SCANDAL_WORKFLOW } from './scandal-flow.mjs';
 const FICTION = 'この記事とコメントは、アイドル駅伝の演出として作られた架空の内容です。実在の報道・人物評価ではありません。';
 const limit = (value, length) => Array.from(String(value ?? '')).slice(0, length).join('');
 const money = value => `${value >= 0 ? '+' : ''}${value}GB`;
@@ -69,6 +70,7 @@ export function scandalResultDraft(team, time = '16:50') {
   const scandal = team?.scandal;
   if (!scandal?.published) return null;
   const mode = scandal.resolution || 'ignored';
+  if(scandal.workflow===SCANDAL_WORKFLOW){if(mode!=='apology')return null;const delta=scandal.result||0,change=delta>0?`ファン${delta.toLocaleString('ja-JP')}人増`:delta<0?`ファン${(-delta).toLocaleString('ja-JP')}人減`:'ファン数の変動なし';return {...article({headline:`${name}の謝罪動画に反響　${change}`,summary:`全体LINEで公開された謝罪動画の完成度を本部が確認。実際のファン増減は${fans(delta)}。`,paragraphs:[`${name}は全体LINEの架空疑惑について謝罪動画を投稿した。動画は実在の不祥事への謝罪ではなく、アイドル駅伝内の演出。`,`本部の確認：${scandal.evaluation}`,`確認された増減は${fans(delta)}。指定した増減は${fans(scandal.requestedDelta)}で、ファン数0人の下限を適用した実際の人数を記事に記載する。`,'動画と記事の架空コメントを確認して全体LINEへ手動投稿。コメントの反応数で追加加点しない。'],category:'スキャンダル',illustration:'scandal',teamIds:[team.id],teamName:name,style:delta<0?'spicy':'mixed'}),time,target:'all',private:false,storyType:'apology-result'};}
   const delta = fans(scandal.result || 0);
   if (mode === 'cover') return {
     ...article({
@@ -126,7 +128,7 @@ export function editorialDraft(action, state, legacy) {
       headline: `【運営プレビュー】${name}に掲載予告　対応は${state.schedule?.scandalDeadline||'16:45'}まで`,
       summary: 'これは対象チームに個別で伝える掲載予告です。参加者用のニュース一覧・記事ページには公開しません。',
       paragraphs: [
-        `週刊ケイテキ編集部から${name}に、ゲーム内の架空トピック「${team?.scandal?.topic || '指定の掲載予告'}」について連絡が届いた。これは実際の不祥事や個人の噂ではなく、全組が一度ずつ参加するイベントのお題である。`,
+        `週刊ケイテキ編集部から${name}に、ゲーム内の架空トピック「${team?.scandal?.topic || '指定の掲載予告'}」について連絡が届いた。これは実際の不祥事や個人の噂ではなく、途中順位で選ばれたチームへのイベントのお題である。`,
         legacy.body,
         '森本は原稿と対象チームを確認し、対象のチームLINEにのみ手動で伝える。もみ消しを選んだ場合は、このトピックを後の公開記事へ転載しない。',
       ],
@@ -279,3 +281,5 @@ export function sampleArticles() {
     published: true, private: false, target: 'all', practice: true,
   }));
 }
+
+export function scandalReportDraft(team,time='16:50'){const s=team?.scandal;if(s?.workflow!==SCANDAL_WORKFLOW||!s.published||s.resolution==='cover')return null;return {...article({headline:`【週刊ケイテキ】${team.name}に架空疑惑　LINEの書き込みから突撃取材`,summary:`ファン役の書き込みを受け、記者役が${team.name}へ取材。これはアイドル駅伝内の架空ニュース。`,paragraphs:[`全体LINEに${team.name}の${s.memberName||'メンバー'}さんについて「${s.topic}」という架空ファン投稿が書き込まれた。`,`記者役ボンボ・グッドマンは「こんな書き込みがあるんですけど」とグループへ取材。マネージャー役の森本が記事化前の対応をチームへ連絡した。`,s.resolution==='apology'?'グループは謝罪動画を全体LINEへ投稿する対応を選んだ。動画への評価とファン増減は別の記事で伝える。':`期限内の対応を確認できなかったため疑惑を記事化。仮ルールによる実際のファン変動は${fans(s.result||0)}。`,'これは運営が準備したお題であり、参加者の実際の過去や人格への評価を示さない。'],category:'スキャンダル',illustration:'scandal',teamIds:[team.id],teamName:team.name,style:'spicy'}),time,target:'all',private:false,storyType:'scandal-report'};}

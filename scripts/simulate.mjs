@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {teamItinerary} from '../apps/dashboard/lib/team-itinerary.mjs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
@@ -21,12 +22,12 @@ for (let slot=0;slot<6;slot++) {
 }
 
 const scenarios = [
-  { id:'G1', name:'堅実な広報', missionIds:['otagei','sponsor','fanclub','collab'], buys:{ad:3,specialAd:1,costume:1,lesson:1,fanGoods:1,decoration:1}, scandal:'cover', sns:4, tour:72, final:36 },
-  { id:'G2', name:'全部使って話題化', missionIds:['otagei','sponsor','fanclub','collab'], buys:{ad:5,specialAd:1,costume:2,lesson:1,fanGoods:2,decoration:2}, scandal:'none', sns:4, tour:72, final:48 },
-  { id:'G3', name:'演技準備を優先', missionIds:['otagei','sponsor','fanclub','collab'], buys:{ad:1,costume:2,lesson:1,fanGoods:2,decoration:2}, scandal:'none', sns:4, tour:72, final:52 },
-  { id:'G4', name:'広告なし・演技優先', missionIds:['otagei','sponsor','fanclub','collab'], buys:{costume:2,lesson:1,fanGoods:3,decoration:2}, scandal:'none', sns:4, tour:72, final:56 },
-  { id:'G5', name:'資金温存・任意労働少', missionIds:['otagei','sponsor','fanclub'], buys:{}, scandal:'none',goodwill:true, sns:0, tour:72, final:30 },
-  { id:'G6', name:'スポンサーなし・衣装優先', missionIds:['otagei','collab'], buys:{ad:3,specialAd:1,costume:1,fanGoods:1,decoration:1}, scandal:'none', sns:4, tour:72, final:44 }
+  { id:'G1', name:'堅実な広報', missionIds:['relay','sponsor','fanclub','collab'], buys:{ad:3,specialAd:1,costume:1,lesson:1,fanGoods:1,decoration:1}, scandal:'cover', sns:4, tour:72, final:36 },
+  { id:'G2', name:'全部使って話題化', missionIds:['relay','sponsor','fanclub','collab'], buys:{ad:5,specialAd:1,costume:2,lesson:1,fanGoods:2,decoration:2}, scandal:'none', sns:4, tour:72, final:48 },
+  { id:'G3', name:'演技準備を優先', missionIds:['relay','sponsor','fanclub','collab'], buys:{ad:1,costume:2,lesson:1,fanGoods:2,decoration:2}, scandal:'none',goodwill:true, sns:4, tour:72, final:52 },
+  { id:'G4', name:'広告なし・演技優先', missionIds:['relay','sponsor','fanclub','collab'], buys:{costume:2,lesson:1,fanGoods:3,decoration:2}, scandal:'none', sns:4, tour:72, final:56 },
+  { id:'G5', name:'資金温存・任意労働少', missionIds:['relay','sponsor','fanclub'], buys:{}, scandal:'none', sns:0, tour:72, final:30 },
+  { id:'G6', name:'スポンサーなし・衣装優先', missionIds:['relay','collab'], buys:{ad:3,specialAd:1,costume:1,fanGoods:1,decoration:1}, scandal:'none', sns:4, tour:72, final:44 }
 ];
 
 function evaluate(s) {
@@ -38,7 +39,7 @@ function evaluate(s) {
   for(const m of done) { gb+=m.gb; fans+=m.fans; }
   const snsBonus=Math.min(s.sns,r.sns.maxBonusPostsPerTeam)*r.sns.fansPerAcceptedPost;
   fans+=Math.min(snsBonus,r.caps.extraSnsFansMax);
-  const effects={none:0,cover:0,apology:r.scandal.apologyFans,publicity:r.scandal.publicityFans,failed:r.scandal.failedFans,ignored:r.scandal.ignoredFans};
+  const effects={none:0,cover:0,ignored:r.scandal.ignoredFans};
   if(s.scandal==='cover') gb-=r.scandal.coverGb;
   fans+=effects[s.scandal]+(s.goodwill?r.goodwill.fans:0);
   let buyCost=0,adFans=0;
@@ -69,12 +70,12 @@ assert.equal(maxAdFans,160000);
 const assumedReturnMinutes={A:20,B:15,C:10,D:5};
 const start=min(r.times.tourStart),show=min(r.times.showStart),deadline=min(r.times.tradeDeadline);
 const routes=r.routes.map((route,i)=>{
-  const last=route.reduce((last,v,j)=>v==='FREE'?last:j,-1);
+  const visits=teamItinerary(`G${i+1}`,r.times),last=5;
   const end=start+last*15+5;
-  const lastVenue=route[last];
-  const back=end+assumedReturnMinutes[lastVenue];
+  const lastVenue=visits[last].kind==='labor'?'合同ロケ':route[last];
+  const back=end+(assumedReturnMinutes[lastVenue]??10);
   const first=route.findIndex(v=>v!=='FREE');
-  return { id:`G${i+1}`, route, lastVenue, end:clock(end), returnExample:clock(back), buyMinutes:Math.max(0,deadline-back), finalPrepMinutes:Math.max(0,show-Math.max(back,min('17:00'))), northToSouth:route.some((v,j)=>v==='D'&&route.slice(j+1).includes('A')), firstSlot:clock(start+first*15) };
+  return { id:`G${i+1}`, route:visits.map(v=>v.kind==='labor'?v.title:v.venue), lastVenue, end:clock(end), returnExample:clock(back), buyMinutes:Math.max(0,deadline-back), finalPrepMinutes:Math.max(0,show-Math.max(back,min('17:00'))), northToSouth:route.some((v,j)=>v==='D'&&route.slice(j+1).includes('A')), firstSlot:clock(start+first*15) };
 });
 const ledgerGap=[];
 for(let slot=0;slot<6;slot++){
@@ -99,35 +100,35 @@ const md=`# ゲームバランス・ルート検討（試運転）
 |---|---|---:|---:|---:|---:|---:|
 ${rows.map((s,i)=>`| ${i+1} | ${s.id} ${s.name} | ${s.final} | ${s.preFinalFans.toLocaleString('ja-JP')} | ${s.fans.toLocaleString('ja-JP')} | ${s.buyCost} | ${s.gb} |`).join('\n')}
 
-16:30時点では各実施済み会場を18点と仮定するとG1が首位、G3/G4/G5が同率最下位。その抽選でG5を選んだ一例として、G1だけもみ消し200GB、G5だけ神対応成功＋5万人。他の組へスキャンダル増減を与えません。抽選・徒歩・訪問成立の実証ではありません。SNSはG5のみ0件、他は4件。詳細のミッション・購入数量は \`simulation-results.json\`。
+16:30時点では各実施済み会場を18点と仮定するとG1/G2/G5/G6が同率首位、G3/G4が同率最下位。その抽選でG1・G3を選んだ一例として、G1だけ口止め200GB、G3だけ神対応成功＋5万人。他の組へスキャンダル増減を与えません。抽選・徒歩・訪問成立の実証ではありません。SNSはG5のみ0件、他は4件。詳細のミッション・購入数量は \`simulation-results.json\`。
 
 ## 金額の釣り合い
 
 - 初期600＋全労働${maxMissionGb}＋定期入金最大${maxIncome}＝最大${moneyCap}GB。全商品を上限まで買うと${maxProductCost}GB、もみ消し200GBを加えても残り${moneyCap-maxProductCost-r.scandal.coverGb}GB。差がマイナスなら全商品と口止め料の両方は賄えません。これは全労働完遂時の上限で、通常は使い道を選ぶ必要があります。
 - 宣伝の直接加算は最大${maxAdFans/10000}万人＝ステージ${maxAdFans/tourFansPerPoint}点分。ツアーは100点、武道館60点。GBだけでステージ全体を覆す規模ではありません。
 - スペシャル宣伝は200GB→6万人、通常は200GB→4万人。同価格の効率差があるので、素材条件を明示し全組が申請できるようにします。
-- スキャンダルの最良＋3万人と最悪−3万人の差は6点分。もみ消し200GBと同額で通常宣伝4万人を買えるため、演技対応は金銭面でも有利です。忙しい組が払って時間を買う選択として扱い、必須の口止め料にしません。
+- 謝罪動画の仮範囲は−10万〜＋3万人で、最大差は13点分。口止め200GBと同額で通常宣伝4万人を買えますが、動画対応には減点リスクがあります。現行方式は口止めなら記事0本、動画なら本部の直接評価で2記事。残高と対応時間を考えて選ぶ設計です。
 - スポンサーとFCは17:00に1回のみ。早い組の毎分入金・複利はありません。全ツアー採点が揃ってからFCを精算すれば、会場順の違いによる源泉ファン数の差を小さくできます。
 
 ## 移動と準備時間の差
 
-**仮の徒歩分：A→共用棟20分、B→15分、C→10分、D→5分。地図・徒歩実測に基づく値ではありません。** 北→南の長距離区間は別途実測します。数値を動かすための入力例として扱ってください。
+**仮の徒歩分：A→共用棟20分、B→15分、C→10分、D→5分、合同ロケ→10分。地図・徒歩実測に基づく値ではありません。** 北→南の長距離区間は別途実測します。数値を動かすための入力例として扱ってください。
 
-| 組 | ルート | 最後の会場終了 | 帰還の仮例 | 購入締切まで | 17:00以降の本部準備分 | 北→南移動 |
+| 組 | ルート | 最後の活動終了 | 帰還の仮例 | 購入締切まで | 17:00以降の本部準備分 | 北→南移動 |
 |---|---|---|---|---:|---:|---|
 ${routes.map(s=>`| ${s.id} | ${s.route.join('→')} | ${s.end} (${s.lastVenue}) | ${s.returnExample} | ${s.buyMinutes}分 | ${s.finalPrepMinutes}分 | ${s.northToSouth?'あり':'なし'} |`).join('\n')}
 
-枠の会場競合は0、全組A〜D各1回・自由枠2回です。しかし**空き枠数が同じでも利用可能な時間は同じではありません**。G1は早帰り、G4〜G6は自由枠をD→Aの移動に使い、G6の最後は南のA。衣装販売・対面レッスン・現地合同ロケを本部帰還後に限定すると不利になります。
+枠の会場競合は0、全組A〜D各1回・労働バトル1回・合同ロケ1回。両労働は2組同時集合です。全組の最後の活動終了は16:50の仮案ですが、帰還地点により準備時間は異なります。G4は最後が南のA。15分枠の実施5分・移動10分に収まるか、特にG5 B→D、G6 A→Cを実測します。
 
 採点のタイミングでも途中順位はずれます。全組が各会場18点でも、途中のファン差は最大${Math.max(...ledgerGap.map(x=>x.gap))/10000}万人。速報には『受験済み会場数』を添え、16:30の順位イベントはこの差を含む速報で対象を一度固定する現ルールです。直前に受信した採点を反映し、処理の遅れだけで対象が変わらないよう確認します。17:00に全会場が揃うと差は0になります。
 
 ## 現案のまま実施するための調整候補
 
-1. **自由労働は2ポイントで受付。合同ロケの動画リレーを代替候補に**。同時集合の合同ロケは会えた組だけの追加報酬にせず、リレーで同じ報酬にします。
+1. **労働バトル・合同ロケは予定どおり2組同時集合**。動画リレーは遅延時の代替候補で、通常の合同ロケは共演とします。
 2. **衣装は各ツアー会場で披露前に購入・着用**。G6が本部へ戻らないと衣装を買えない状態を避けます。会場在庫・30秒受渡し・入力の分担をリハで確認。実物をビジュアル採点し、自動加点はしません。
 3. **レッスンは同じ資料を同じ時刻に配る**。演目の申告は遠隔で可。早帰り組だけ長い対面指導を得る形にしません。
-4. **早帰りを追加報酬に換算しない**。G1の余った30分は移動差の補正を優先。SNS・労働には全組共通の上限があるので無制限稼ぎになりません。
-5. G4〜G6の移動が30分の自由枠で収まらない場合、任意労働の省略だけで吸収せずツアー自体を組み替えます。
+4. **早帰りを追加報酬に換算しない**。帰還地点による移動差の補正を優先。SNS・労働には全組共通の上限があるので無制限稼ぎになりません。
+5. 各枠10分の移動が成立しない場合、労働を黙って省略せず会場位置か時間枠を再調整します。
 
 ## ルート変更が必要な場合の代替
 
