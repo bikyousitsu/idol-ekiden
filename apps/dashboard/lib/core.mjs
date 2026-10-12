@@ -87,7 +87,7 @@ export function append(state,input){assert(input&&typeof input==='object','操�
  if(a.kind==='settle')a.incomePolicy='disabled-v2';
  if(a.kind==='relay_battle')a.rewardGb=rules.laborRelay.winnerGb;
  if(a.kind==='mission'&&a.missionId==='relay')throw Error('リレーは「労働バトルの勝敗（2組）」で勝者を登録してください');
- if(a.kind==='live_topics_start'){assert(!current.liveTopics,'お題の選択順は確定済みです');assert(current.settled&&current.scandalPublished&&(current.legacyAllScandals||current.goodwill),'スキャンダル・神対応・ツアー終了の照合を先に確定してください');assert(current.teams.every(t=>Object.keys(t.stages).length===4),'全24会場の採点を照合してから順位を固定してください');assert(current.teams.every(t=>t.missions.collab),'全6組の合同ロケ採点を照合してから順位を固定してください');a.order=selectionOrder(current.teams);a.catalog=structuredClone(rules.liveTopics?.catalog||liveTopicCandidates);a.fanSnapshot=current.teams.map(t=>({id:t.id,fans:t.totalFans}));}
+ if(a.kind==='live_topics_start'){assert(!current.liveTopics,'お題の選択順は確定済みです');assert(current.settled,'ツアー終了の照合を先に確定してください');assert(current.teams.every(t=>Object.keys(t.stages).length===4),'全24会場の採点を照合してから順位を固定してください');assert(current.teams.every(t=>t.missions.collab),'全6組の合同ロケ採点を照合してから順位を固定してください');a.order=selectionOrder(current.teams);a.catalog=structuredClone(rules.liveTopics?.catalog||liveTopicCandidates);a.fanSnapshot=current.teams.map(t=>({id:t.id,fans:t.totalFans}));}
  if(['live_choice_open','live_choice','live_choice_correct'].includes(a.kind))assert(current.phase==='tour','お題選択は武道館前のツアー中に行います');
  if(a.kind==='live_choice_open')a.startedAt=new Date().toISOString();
  if(a.kind==='mission')throw Error('労働の報酬は受付終了です。合同ロケ採点か労働バトルの勝敗を選んでください');
