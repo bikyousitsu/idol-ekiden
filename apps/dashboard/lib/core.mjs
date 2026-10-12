@@ -103,7 +103,7 @@ export function append(state,input){assert(input&&typeof input==='object','操�
  if(a.kind==='scandal_publish')assert(minutes(a.time)>=minutes(s.scandalPublish),`結果公開は${s.scandalPublish}以降です`);
  if(a.kind==='settle')assert(minutes(a.time)>=minutes(s.incomeSettlement),`定期収入は${s.incomeSettlement}以降です`);
  if(a.kind==='final')assert(['tour','closed','live'].includes(current.phase),'武道館採点は全国ツアー開始後から結果公開前に登録できます');
- if(a.kind==='phase'){const old=PHASES.indexOf(current.phase),next=PHASES.indexOf(a.value);assert(next===old+1,'進行段階は順番に進めてください');if(a.value==='closed'){assert(current.settled,'ツアー終了の照合を記録してください');assert(current.scandalPublished,'スキャンダル結果を公開してください');assert(current.legacyAllScandals||!!current.goodwill,'神対応イベントの成立・未成立を記録してください');if(current.attentionEvent?.scandalWorkflow===SCANDAL_WORKFLOW)assert(current.liveTopics?.choices.length===6,'6組の武道館のお題を確定してください');}}
+ if(a.kind==='phase'){const old=PHASES.indexOf(current.phase),next=PHASES.indexOf(a.value);assert(next>old,'進行は現在より後の段階を選んでください');if(a.value==='announced')assert(current.teams.every(t=>t.final),'全6組の武道館採点が必要です');}
  if(a.kind==='void'){const target=state.actions.find(x=>x.id===a.targetId);assert(target&&!['void','phase','clock','schedule','scandal_plan','attention_event','live_topics_start','live_choice_open','live_choice','live_choice_correct'].includes(target.kind),'取り消せる取引を選んでください');assert(!current.voided.includes(a.targetId),'取り消し済みです');assert(a.reason?.trim().length>=4,'理由を4文字以上で入力してください');}
  const next={...state,actions:[...state.actions,a]};calculate(next);return next;
 }
