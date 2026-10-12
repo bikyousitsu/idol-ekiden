@@ -6,6 +6,7 @@
 |---|---|---|---|
 | 開会式・6枚 | [ブラウザ版](https://idol-ekiden-control.coolmyna3.chatgpt.site/opening-rules-v4.html)／[PDF](opening-rules-v4.pdf) | [PPTX](opening-rules-v4.pptx) | [台本](opening-rules-v4-script.md) |
 | 武道館・6枚 | [ブラウザ版](https://idol-ekiden-control.coolmyna3.chatgpt.site/budokan-rules-v3.html)／[PDF](budokan-rules-v3.pdf) | [PPTX](budokan-rules-v3.pptx) | [台本](budokan-rules-v3-script.md) |
+| 優勝発表・1枚 | [投影版](https://idol-ekiden-control.coolmyna3.chatgpt.site/winner-slide.html) | [差し替え用PPTX](winner-announcement-template-v1.pptx) | [操作案内](winner-announcement-guide.md) |
 
 - [開会式進行表・社長映像原稿](opening-ceremony-runbook.md)
 - [各グループLINEへ送る文面](departure-line-message.md)。運営ページの「連絡原稿」にも収録。
