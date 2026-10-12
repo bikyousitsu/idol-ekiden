@@ -32,7 +32,21 @@ export function calculate(state){
   else if(a.kind==='mission'){const m=rules.missions.find(m=>m.id===a.missionId);assert(m,'ミッションが不正です');assert(!t.missions[m.id]&&!(m.id==='relay'&&t.missions.otagei),'この労働は受取済みです');t.missions[m.id]=true;gb=m.gb;fans=m.fans;label=m.name;}
   else if(a.kind==='collab'){assert(Array.isArray(a.teamIds)&&a.teamIds.length===2&&a.teamIds[0]!==a.teamIds[1],'異なる2組を選んでください');for(const id of a.teamIds){const c=teams[id];assert(c&&!c.missions.collab,'合同ロケは各組1回です');c.missions.collab=true;c.gb+=300;c.fans+=30000;}label='合同ロケ';}
   else if(a.kind==='purchase'){const p=rules.products.find(p=>p.id===a.productId);assert(p,'商品が不正です');assert((t.purchases[p.id]||0)<p.max,'購入上限です');assert(!p.proofRequired||a.proof?.trim(),'成功の確認内容が必要です');assert(t.gb>=p.price,'GB残高が足りません');t.purchases[p.id]=(t.purchases[p.id]||0)+1;gb=-p.price;fans=p.fans;label=p.name;}
-  else if(a.kind==='sns'){assert(['idol','fan'].includes(a.postType),'投稿の種類を選んでください');assert(a.proof?.trim(),'投稿内容・確認根拠が必要です');if(a.postType==='idol'){const prev=t.sns.filter(p=>p.postType==='idol').at(-1);assert(!prev||minutes(a.time)-minutes(prev.time)>=15,'アイドル投稿は15分に1回です');}else{assert(rules.venues.some(v=>v.id===a.venue),'ライブ報告の会場を選んでください');assert(t.stages[a.venue],'会場の採点後にライブ報告できます');assert(!t.sns.some(p=>p.postType==='fan'&&p.venue===a.venue),'この会場のライブ報告は受理済みです');}fans=t.sns.length<rules.sns.maxBonusPostsPerTeam?10000:0;t.sns.push({...a});label='SNS掲載';}
+  else if(a.kind==='sns'){
+   assert(['idol','fan'].includes(a.postType),'投稿の種類を選んでください');assert(a.proof?.trim(),'投稿内容・確認根拠が必要です');
+   if(a.snsPolicy==='manual-v2'){
+    assert(a.managerApproved===true,'森本の投稿許可と全体LINEへの掲載を確認してください');
+    assert(Number.isSafeInteger(a.gbDelta)&&Number.isSafeInteger(a.fanDelta),'GB・ファン数は整数で入力してください');
+    gb=Math.max(-t.gb,a.gbDelta);fans=Math.max(-t.fans,a.fanDelta);label='SNS投稿の本部評価';
+   }else{
+    // Replay historical fixed rewards without changing already recorded balances.
+    const historical=t.sns.filter(p=>p.snsPolicy!=='manual-v2');
+    if(a.postType==='idol'){const prev=historical.filter(p=>p.postType==='idol').at(-1);assert(!prev||minutes(a.time)-minutes(prev.time)>=15,'アイドル投稿は15分に1回です');}
+    else{assert(rules.venues.some(v=>v.id===a.venue),'ライブ報告の会場を選んでください');assert(t.stages[a.venue],'会場の採点後にライブ報告できます');assert(!historical.some(p=>p.postType==='fan'&&p.venue===a.venue),'この会場のライブ報告は受理済みです');}
+    fans=historical.length<4?10000:0;label='SNS掲載（旧方式）';
+   }
+   t.sns.push({...a});
+  }
   else if(a.kind==='scandal_open'){assert(!t.scandal,'スキャンダルは各組1回です');t.scandal={topic:a.topic||rules.scandal.topics[Number(t.id.slice(1))-1],resolution:null};label='掲載予告';}
   else if(a.kind==='scandal_contact'){assert(t.scandal?.workflow===SCANDAL_WORKFLOW&&!t.scandal.contacted&&!t.scandal.resolution&&!t.scandal.published,'未取材の対象首位を選んでください');assert(typeof a.memberName==='string'&&a.memberName.trim().length>0&&a.memberName.trim().length<=30,'対象アイドルの呼び名を30字以内で入力してください');assert(a.rumorPosted===true&&a.interviewDone===true,'全体LINEの書き込みと突撃取材を確認してください');Object.assign(t.scandal,{memberName:a.memberName.trim(),contacted:true,contactTime:a.time});label='架空投稿・突撃取材の確認';}
   else if(a.kind==='scandal_resolve'){assert(t.scandal&&!t.scandal.resolution,'未対応の予告が必要です');const modern=t.scandal.workflow===SCANDAL_WORKFLOW;assert((modern?['cover','apology']:['cover','apology','publicity','failed']).includes(a.resolution),'対応は口止め料か謝罪動画を選んでください');if(modern){assert(t.scandal.contacted,'全体LINEの書き込みと突撃取材を先に確認してください');if(a.resolution==='apology'){assert(a.videoShared===true,'謝罪動画の全体LINE投稿を確認してください');assert(a.proof?.trim().length>=4,'動画の完成度・増減理由を4文字以上で入力してください');t.scandal.requestedDelta=int(a.fanDelta,APOLOGY_MIN,APOLOGY_MAX);t.scandal.videoShared=true;t.scandal.evaluation=a.proof.trim();}}assert(a.resolution==='cover'||a.proof?.trim(),'確認内容が必要です');if(a.resolution==='cover'){assert(t.gb>=200,'口止め料200GBが足りません');gb=-200;}t.scandal.resolution=a.resolution;label=modern?'口止め・謝罪動画の受付':'スキャンダル対応';}
@@ -41,7 +55,7 @@ export function calculate(state){
   else if(a.kind==='final'){assert(!t.final,'武道館は採点済みです');assert(Array.isArray(a.judges)&&a.judges.length===3,'審査員3人の採点が必要です');const all=a.judges.map(j=>scores(j,rules.final.maxima)),avg=rules.final.maxima.map((_,i)=>all.reduce((s,r)=>s+r[i],0)/3),total=Math.round(avg.reduce((s,x)=>s+x,0)*10)/10;t.final={judges:all,averages:avg,total,fans:Math.round(total*10000)};label='武道館採点（公開待ち）';}
   else if(a.kind==='adjust'){assert(a.reason?.trim().length>=4,'訂正の理由を4文字以上で入力してください');gb=int(a.gb,-10000,10000);fans=int(a.fans,-10000000,10000000);label='手動訂正';}
   else throw Error('不明な操作です');
-  if(t){t.gb+=gb;t.fans=Math.max(0,t.fans+fans);assert(t.gb>=0,'訂正すると残高がマイナスになります。関連する購入を先に取り消してください');}
+  if(t){t.gb+=gb;t.fans=Math.max(0,t.fans+fans);assert(Number.isSafeInteger(t.gb)&&Number.isSafeInteger(t.fans),'合計が扱える整数の範囲を超えています');assert(t.gb>=0,'訂正すると残高がマイナスになります。関連する購入を先に取り消してください');}
   effects.push({id:a.id,teamId:a.teamId,teamIds:a.teamIds,kind:a.kind,label,gb,fans,time:a.time,reason:a.reason||a.proof||''});
  }
  if(phase==='announced')assert(Object.values(teams).every(t=>t.final),'全6組の武道館採点が必要です');
@@ -52,6 +66,7 @@ export function calculate(state){
 export function append(state,input){assert(input&&typeof input==='object','操作を指定してください');assert(!state.actions.some(a=>a.id===input.id),'同じ操作は登録済みです');const current=calculate(state),a={...input,id:input.id||crypto.randomUUID(),time:input.time||current.clock},s=current.schedule;minutes(a.time);
  if(!['phase','clock','void','adjust','final','replace','schedule','scandal_plan','live_choice_open','live_choice','live_choice_correct'].includes(a.kind)){assert(current.phase==='tour','この操作はツアー中に行います');assert(minutes(a.time)<minutes(s.tradeDeadline),`取引は${s.tradeDeadline}で締切です`);}
  if(a.kind==='purchase'&&a.productId==='costume'&&a.venue){assert(rules.venues.some(v=>v.id===a.venue),'購入会場が不正です');assert(!current.teams.find(t=>t.id===a.teamId)?.stages[a.venue],'その会場の披露は採点済みです。披露前に衣装を購入してください');}
+ if(a.kind==='sns')a.snsPolicy='manual-v2';
  if(a.kind==='live_topics_start'){assert(!current.liveTopics,'お題の選択順は確定済みです');assert(current.settled&&current.scandalPublished&&(current.legacyAllScandals||current.goodwill),'スキャンダル・神対応・定期収入を先に確定してください');assert(current.teams.every(t=>Object.keys(t.stages).length===4),'全24会場の採点を照合してから順位を固定してください');a.order=selectionOrder(current.teams);a.catalog=structuredClone(rules.liveTopics?.catalog||liveTopicCandidates);a.fanSnapshot=current.teams.map(t=>({id:t.id,fans:t.totalFans}));}
  if(['live_choice_open','live_choice','live_choice_correct'].includes(a.kind))assert(current.phase==='tour','お題選択は武道館前のツアー中に行います');
  if(a.kind==='live_choice_open')a.startedAt=new Date().toISOString();

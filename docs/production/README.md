@@ -6,6 +6,8 @@
 |---|---|
 | 数字の正本 | `../../data/rules.json` |
 | 共通ルール・価格 | `common-rules.md` |
+| 開会式・武道館スライド | [最新版資料](../../materials/README.md) |
+| 出発LINE・開会式進行 | [送信文面](../../materials/departure-line-message.md) ／ [進行表](../../materials/opening-ceremony-runbook.md) |
 | 参加者説明 | `participant-guide.md` |
 | 運営配置・入力・進行 | `operations-manual.md` |
 | 労働・スキャンダルの具体案 | `event-proposals.md` |
@@ -18,6 +20,7 @@
 | 司会・会場・演目台本 | `staff-scripts.md` |
 | ツアーお題・クイズ解答・競技基準 | `stage-task-book.md` |
 | 実費10,000円の調達枠 | `procurement-budget.md` |
+| 初期状態からの操作リハ | [順番と入力例](rehearsal-step-by-step.md) |
 | 確認事項・リハ・当日チェック | `rehearsal-checklist.md` |
 | 所有者登録・スタッフ案内・15分の動作確認 | `setup-and-smoke-check.md` |
 | 6チーム仮想進行・移動差 | `balance-review.md` |

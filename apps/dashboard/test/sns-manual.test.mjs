@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {append,calculate,emptyState,draftFor} from '../lib/core.mjs';
+const start=()=>append(emptyState(),{id:'start',kind:'phase',value:'tour',time:'15:00'});
+const add=(s,a)=>append(s,{id:crypto.randomUUID(),time:'16:00',...a});
+const post=(s,a={})=>add(s,{kind:'sns',teamId:'G1',postType:'idol',managerApproved:true,proof:'投稿動画の完成度を確認',gbDelta:100,fanDelta:20000,...a});
+const team=s=>calculate(s).teams.find(t=>t.id==='G1');
+test('同時刻・5件以上でも投稿ごとの自由評価を反映する',()=>{let s=start();for(let i=0;i<8;i++)s=post(s,{postType:i%2?'fan':'idol'});assert.equal(team(s).gb,1400);assert.equal(team(s).fans,160000);assert.equal(team(s).sns.length,8);assert(s.actions.slice(1).every(a=>a.snsPolicy==='manual-v2'));});
+test('マイナスGBとファンは0を下限として実増減を記録する',()=>{let s=post(start());s=post(s,{gbDelta:-900,fanDelta:-50000});assert.equal(team(s).gb,0);assert.equal(team(s).fans,0);const e=calculate(s).effects.at(-1);assert.equal(e.gb,-700);assert.equal(e.fans,-20000);const article=draftFor(s.actions.at(-1),s);assert(article.body.includes('-700GB'));assert(article.body.includes('-2万人'));});
+test('許可・評価理由・整数の入力を必要とする',()=>{assert.throws(()=>post(start(),{managerApproved:false}),/森本/);assert.throws(()=>post(start(),{proof:''}),/確認根拠/);assert.throws(()=>post(start(),{gbDelta:0.5}),/整数/);assert.throws(()=>post(start(),{fanDelta:Infinity}),/整数/);assert.throws(()=>post(start(),{gbDelta:Number.MAX_SAFE_INTEGER}),/合計/);});
+test('旧方式の投稿実績は新方式を追加しても金額が変わらない',()=>{let s=start();for(let i=0;i<5;i++)s.actions.push({id:'old'+i,kind:'sns',teamId:'G1',postType:'idol',time:['15:30','15:45','16:00','16:15','16:30'][i],proof:'旧受付'});assert.equal(team(s).fans,40000);s=post(s,{time:'16:31',gbDelta:50,fanDelta:-10000});assert.equal(team(s).gb,650);assert.equal(team(s).fans,30000);assert.equal(calculate(s).effects.filter(e=>e.label==='SNS掲載（旧方式）').length,5);});
+test('取消は評価前の状態へ戻し、投稿締切は共通の購入締切に従う',()=>{let s=post(start());s=add(s,{kind:'void',targetId:s.actions.at(-1).id,reason:'違う投稿のため取消'});assert.equal(team(s).gb,600);assert.equal(team(s).fans,0);assert.throws(()=>post(start(),{time:'17:20'}),/締切/);});
