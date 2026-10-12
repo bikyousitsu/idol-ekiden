@@ -8,61 +8,10 @@ const limit = (value, length) => Array.from(String(value ?? '')).slice(0, length
 const money = value => `${value >= 0 ? '+' : ''}${value}GB`;
 const fans = value => `${value >= 0 ? '+' : ''}${value / 10000}万人`;
 
-/** 「辛口」は架空の活動へのツッコミ。個人の容姿・属性・噂に向けない。 */
-export function commentDraft(style = 'mixed', headline = '', teamName = 'このグループ') {
-  const name = limit(teamName || 'このグループ', 40);
-  if (String(headline).includes('掲載見送り')) return coverComments();
-  const support = [
-    ['古参のうちわ係', '応援', `${name}、目立つ場面だけじゃなく移動も準備もみんなでやってほしい。最後まで応援する。`, 42, 3],
-    ['サビだけ覚えた人', '応援', '完成度も気になるけど、全員が出てきてやりきるステージを見たい。古参ファンの出番も頼む。', 31, 2],
-    ['現場には間に合う予定', '応援', 'こういう企画は照れずに乗った組が強いと思う。武道館で答え合わせしたい。', 27, 4],
-    ['うちわは自作派', '応援', '衣装も装飾も、そのグループらしさが出ていたらうれしい。材料の値段だけじゃ決まらない。', 35, 2],
-  ];
-  const analysis = [
-    ['数字を見る古参', '考察', '記事の勢いと順位は別。ファン数・GB・巡った会場数を一緒に見たい。今の順位だけで決めつけるのは早そう。', 38, 5],
-    ['ライブ待機中', '考察', '話題をつくる作戦はありだと思う。ただ、最後に何を見せるかまで考えているかは気になる。', 25, 6],
-  ];
-  const spicy = [
-    ['宣伝より本編派', '辛口', `${name}、宣伝の見出しは強いけど、本編が追いつくかはまだ分からない。ステージで見せてほしい。`, 24, 12],
-    ['課金には慎重', '辛口', 'GBを使って話題を買うのは作戦として分かる。でも、それだけで人気グループ気分になられると困る。', 19, 16],
-    ['前置きは短めで', '辛口', '壮大な予告のあとに普通の自己紹介だったら笑ってしまう。ハードルは自分たちで上げすぎない方がいい。', 22, 11],
-  ];
-  if (/合同|共演|コラボ/.test(headline)) {
-    support[0][2] = `${name}、相手も目立つ共演になったらうれしい。競争しながら協力できるのは良い。`;
-    analysis[0][2] = '合同ロケは各組一回なので、組み合わせも作戦になりそう。一方だけが主役になっていないかも見たい。';
-    spicy[0][2] = '合同といいつつ自己紹介を二本つなげただけだと寂しい。二組いるからこその場面に期待。';
-  } else if (/衣装|ちょんまげ|装飾/.test(headline)) {
-    support[0][2] = '動物の耳もキラキラも、全員が着るならグループ感が出そう。古参ファンのうちわも合わせたい。';
-    analysis[0][2] = '衣装を買った数と見栄えは別。少ない素材をどう組み合わせるかを見るのも楽しみ。';
-    spicy[0][2] = '派手な材料を全部乗せしただけで完成と言われると困る。色かテーマはそろえてほしい。';
-  } else if (/釈明|話題化|スキャンダル/.test(headline)) {
-    support[0][2] = '架空のお題にどう返すかも演目の一つだと思う。役になりきって切り抜けてほしい。';
-    analysis[0][2] = '対応の選択で数字が動くけど、最後は本番まである。ここだけで勝負は決まらなさそう。';
-    spicy[0][2] = '話題づくりだけはうまい、で終わらないといいな。次のステージで中身も見せてほしい。';
-  } else if (/武道館|デビュー|ライブ/.test(headline)) {
-    support[0][2] = `${name}、誰か一人に全部任せず全員の見せ場をつくってほしい。古参ファンも盛り上げよう。`;
-    analysis[0][2] = 'ツアーの順位と武道館の出来は同じとは限らない。全組が終わってから結果を見たい。';
-    spicy[0][2] = '登場だけやたらかっこよくて本編が小声だと困る。準備の成果をちゃんと届けてほしい。';
-  }
-  const rows = style === 'supportive'
-    ? [support[0], support[1], support[3], analysis[0]]
-    : style === 'spicy'
-      ? [support[2], spicy[0], analysis[1], spicy[1], spicy[2]]
-      : [support[0], analysis[0], spicy[0], support[1], analysis[1]];
-  return rows.map(([author, stance, text, agree, disagree], index) => ({
-    id: `fiction-comment-${index + 1}`, author, stance,
-    text: limit(text, 250), agree, disagree,
-  }));
-}
-
-function coverComments() {
-  return [
-    ['見守る古参', '応援', '載せないと決めた内容は追わなくていい。次の活動を見たい。', 43, 3],
-    ['資金配分が気になる', '考察', '限られたGBの使い方として選んだんだと思う。本番の準備との兼ね合いが気になる。', 28, 5],
-    ['本編待ち', '辛口', 'ニュースが静かになった分、ステージはちゃんと派手にしてほしい。', 22, 12],
-    ['話題より歌派', '応援', 'ここで終わりじゃないので。ライブを楽しみにしています。', 31, 2],
-  ].map(([author, stance, text, agree, disagree], i) => ({ id: `cover-comment-${i + 1}`, author, stance, text, agree, disagree }));
-}
+/** 「辛口」は架空の活動へのツッコミ。公開済みのコメントは自動で書き換えない。 */
+export { catalogComments as commentDraft } from './comment-catalog.mjs';
+import { catalogComments as commentDraft } from './comment-catalog.mjs';
+function coverComments(){return commentDraft('supportive','掲載見送り');}
 
 /** 16:50の結果公開時に各グループの記事を独立したURLで公開する素材。 */
 export function scandalResultDraft(team, time = '16:50') {

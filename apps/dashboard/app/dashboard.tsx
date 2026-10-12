@@ -12,6 +12,7 @@ import NewsDesk from './admin/news-desk';
 import StaffAccounts from './admin/staff-accounts';
 import { portalHref } from '../lib/articles.mjs';
 import { rules } from '../lib/core.mjs';
+import { readEventSelection,saveEventSelection } from '../lib/event-selection.mjs';
 type Any = any;
 const phases:Record<string,string>={preparing:'準備中',tour:'全国ツアー',closed:'取引終了・出順選択',live:'武道館ライブ',announced:'結果公開'};
 const labels:Record<string,string>={stage:'ツアー採点',relay_battle:'労働バトルの勝敗（2組）',purchase:'GBで購入',sns:'SNS評価',attention_event:'途中順位イベント・対象抽選',goodwill:'神対応イベントの結果',scandal_open:'旧方式のスキャンダル予告',scandal_resolve:'スキャンダル対応',collab_score:'合同ロケ採点',settle:'ツアー終了の照合',scandal_publish:'スキャンダル結果確定',final:'武道館採点',adjust:'記録の訂正'};
@@ -21,18 +22,21 @@ export default function Dashboard(){
  const [snsGb,setSnsGb]=useState(0),[snsFans,setSnsFans]=useState(0),[snsApproved,setSnsApproved]=useState(false);
  const [battlePair,setBattlePair]=useState('G1,G2'),[battleWinner,setBattleWinner]=useState('');
  const [collabScore,setCollabScore]=useState('');
+ const [eventReady,setEventReady]=useState(false);
+ useEffect(()=>{try{setEvent(readEventSelection(window.localStorage));}catch{}setEventReady(true);},[]);
  const modernScandal=!!snapshot?.operator&&isCurrentScandal(snapshot.calculated);
  const requestSerial=useRef(0),currentEvent=useRef(event);currentEvent.current=event;
  const load=async()=>{const requestedEvent=event,serial=++requestSerial.current;try{const r=await fetch('/api/admin/event?event='+event,{cache:'no-store'}),data:Any=await r.json();if(!r.ok)throw Error(data.error);if(requestedEvent===currentEvent.current&&serial===requestSerial.current){setSnapshot(data);setErr('');}}catch(e){if(requestedEvent===currentEvent.current&&serial===requestSerial.current)setErr((e as Error).message);}};
- useEffect(()=>{load();const timer=setInterval(load,5000);return()=>clearInterval(timer);},[event]);
+ useEffect(()=>{if(!eventReady)return;load();const timer=setInterval(load,5000);return()=>clearInterval(timer);},[event,eventReady]);
+ function selectEvent(value:string){try{saveEventSelection(window.localStorage,value);}catch{}++requestSerial.current;setEvent(value);setSnapshot(null);setErr('');setNotice('');}
  async function send(body:Any){setBusy(true);setNotice('');try{const r=await fetch('/api/admin/event?event='+event,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({version:snapshot?.version,...body})}),d:Any=await r.json();if(!r.ok)throw Error(d.error);setNotice('記録しました');await load();return true;}catch(e){setNotice((e as Error).message);await load();return false;}finally{setBusy(false);}}
  function action(){let a:Any={id:crypto.randomUUID(),kind,teamId:team,time:receiptTime||snapshot.clock,proof};if(kind==='stage')Object.assign(a,{venue,scores:score});if(kind==='collab_score')a.score=Number(collabScore);if(kind==='relay_battle'){delete a.teamId;a.teamIds=battlePair.split(',');a.winnerId=battleWinner;}if(kind==='purchase'){a.productId=product;if(product==='costume'&&costumeVenue!=='HQ')a.venue=costumeVenue;}if(kind==='goodwill'){a.teamId=snapshot.calculated.attentionEvent?.lowestId;a.success=goodwillSuccess;}if(kind==='sns')Object.assign(a,{postType,gbDelta:snsGb,fanDelta:snsFans,managerApproved:snsApproved});if(kind==='scandal_resolve'){a.resolution=resolution;if(modernScandal){a.teamId=snapshot.calculated.attentionEvent?.leaderId;if(resolution==='apology')Object.assign(a,{fanDelta:apologyDelta,videoShared});}}if(kind==='final')a.judges=judges;if(kind==='adjust')Object.assign(a,{gb,fans,reason});if(['stage','final','collab_score'].includes(kind)){const exists=snapshot.calculated.effects.filter((e:Any)=>e.kind===kind&&e.teamId===team).findLast((e:Any)=>kind!=='stage'||snapshot.raw.actions.find((x:Any)=>x.id===e.id)?.venue===venue||snapshot.raw.actions.find((x:Any)=>x.id===e.id)?.replacement?.venue===venue);if(exists){if(proof.trim().length<4){setNotice('採点済みです。確認内容欄に訂正理由を4文字以上入力してください');return;}a={id:crypto.randomUUID(),kind:'replace',targetId:exists.id,replacement:a,reason:proof,time:snapshot.clock};}}send({command:'action',action:a}).then(ok=>{if(ok&&kind==='collab_score'){setCollabScore('');setProof('');}if(ok&&kind==='sns'){setSnsApproved(false);setSnsGb(0);setSnsFans(0);setProof('');}});}
  function download(value:Any,name:string){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'}));a.download=name;a.click();URL.revokeObjectURL(a.href);}
  const byId=(id:string)=>snapshot?.teams.find((t:Any)=>t.id===id)?.name||id;
  const tabs=[['admin','採点・報酬'],['messages','連絡原稿'],['scandal','スキャンダル進行'],['news','記事の編集'],['history','台帳・設定'],['staff_schedule','スタッフの予定'],['show_run','武道館の進行'],...(snapshot?.role==='owner'?[['live_topics','武道館のお題'],['schedule','予定・お題'],['staff','スタッフID']]:[])];
  return <main className="ops-site">
- <header className="masthead"><div className="brand">KEITEKI <strong>CONTROL</strong><span>運営専用 / アイドル駅伝</span></div><div className="header-right"><label>操作するイベント<select disabled={busy} value={event} onChange={e=>{setEvent(e.target.value);setSnapshot(null);}}><option value="practice">練習データ</option><option value="rehearsal">リハーサル</option><option value="production">本番</option></select></label><a href={portalHref(event)} target="_blank" rel="noreferrer">参加者画面 ↗</a></div></header>
- <div className="draft-note">{event==='production'?'本番台帳を操作しています。':'練習・リハーサルです。本番の成績には影響しません。'} 記事の公開には編集画面での確認が必要です。</div>
+ <header className="masthead"><div className="brand">KEITEKI <strong>CONTROL</strong><span>運営専用 / アイドル駅伝</span></div><div className="header-right"><label>操作するイベント<select disabled={busy||!eventReady} value={event} onChange={e=>selectEvent(e.target.value)}><option value="practice">練習データ</option><option value="rehearsal">リハーサル</option><option value="production">本番</option></select></label><a href={portalHref(event)} target="_blank" rel="noreferrer">参加者画面 ↗</a></div></header>
+ <div className="draft-note">{!eventReady?'保存したイベントを読み込んでいます…':event==='production'?'本番台帳を操作しています。':'練習・リハーサルです。本番の成績には影響しません。'} 記事の公開には編集画面での確認が必要です。</div>
  <nav aria-label="運営の操作">{tabs.map(([id,title])=><button key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}>{title}</button>)}</nav>
  {err&&<div className="error" role="alert">{err}<button onClick={load}>再読込</button></div>}{notice&&<div className="notice" role="status">{notice}</div>}
  {!snapshot&&!err?<div className="loading">運営の記録を読み込んでいます…</div>:snapshot&&<>
