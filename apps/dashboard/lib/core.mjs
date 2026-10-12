@@ -46,7 +46,7 @@ export function calculate(state){
    fans=score*rules.collabScoring.fanPerPoint;t.missions.collab=true;t.collab={score,fans,time:a.time};label='合同ロケ採点';
   }
   else if(a.kind==='collab'){assert(Array.isArray(a.teamIds)&&a.teamIds.length===2&&a.teamIds[0]!==a.teamIds[1],'異なる2組を選んでください');for(const id of a.teamIds){const c=teams[id];assert(c&&!c.missions.collab,'合同ロケは各組1回です');c.missions.collab=true;c.gb+=300;c.fans+=30000;}label='合同ロケ';}
-  else if(a.kind==='purchase'){const p=rules.products.find(p=>p.id===a.productId)||(rules.retiredProducts||[]).find(p=>p.id===a.productId);assert(p,'商品が不正です');assert((t.purchases[p.id]||0)<p.max,'購入上限です');assert(!p.proofRequired||a.proof?.trim(),'成功の確認内容が必要です');assert(t.gb>=p.price,'GB残高が足りません');t.purchases[p.id]=(t.purchases[p.id]||0)+1;gb=-p.price;fans=p.fans;label=p.name;}
+  else if(a.kind==='purchase'){const p=rules.products.find(p=>p.id===a.productId)||(rules.retiredProducts||[]).find(p=>p.id===a.productId);assert(p,'商品が不正です');assert(p.max==null||(t.purchases[p.id]||0)<p.max,'購入上限です');assert(!p.proofRequired||a.proof?.trim(),'成功の確認内容が必要です');assert(t.gb>=p.price,'GB残高が足りません');t.purchases[p.id]=(t.purchases[p.id]||0)+1;gb=-p.price;fans=p.fans;label=p.name;}
   else if(a.kind==='sns'){
    assert(['idol','fan'].includes(a.postType),'投稿の種類を選んでください');assert(a.proof?.trim(),'投稿内容・確認根拠が必要です');
    if(a.snsPolicy==='manual-v2'){

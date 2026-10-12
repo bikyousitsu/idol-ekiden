@@ -46,7 +46,7 @@ function evaluate(s) {
   // 数量・最終収支の検証。収入が来る前に全部買えるという検証ではない。
   for(const [id,n] of Object.entries(s.buys)) {
     const p=r.products.find(p=>p.id===id);
-    assert.ok(p); assert.ok(Number.isInteger(n)&&n>=0&&n<=p.max);
+    assert.ok(p); assert.ok(Number.isInteger(n)&&n>=0&&(p.max==null||n<=p.max));
     buyCost+=p.price*n; adFans+=p.fans*n;
   }
   fans+=adFans;
@@ -61,8 +61,8 @@ const outcomes=scenarios.map(evaluate);
 const rows=[...outcomes].sort((a,b)=>b.fans-a.fans);
 const maxMissionGb=r.missions.filter(m=>!m.legacy).reduce((sum,m)=>sum+m.gb*m.max,0);
 const maxIncome=r.income.sponsorGb+r.income.fanclubCapGb;
-const maxProductCost=r.products.reduce((sum,p)=>sum+p.price*p.max,0);
-const maxAdFans=r.products.reduce((sum,p)=>sum+p.fans*p.max,0);
+const maxProductCost=r.products.some(p=>p.max==null)?null:r.products.reduce((sum,p)=>sum+p.price*p.max,0);
+const maxAdFans=r.products.reduce((sum,p)=>sum+(p.fans===0?0:p.max==null?Infinity:p.fans*p.max),0);
 const moneyCap=r.teams[0].initialGb+maxMissionGb+maxIncome;
 assert.equal(maxAdFans,160000);
 
@@ -104,7 +104,7 @@ ${rows.map((s,i)=>`| ${i+1} | ${s.id} ${s.name} | ${s.final} | ${s.preFinalFans.
 
 ## 金額の釣り合い
 
-- 初期600＋全労働${maxMissionGb}＋定期入金最大${maxIncome}＝最大${moneyCap}GB。全商品を上限まで買うと${maxProductCost}GB、もみ消し200GBを加えても残り${moneyCap-maxProductCost-r.scandal.coverGb}GB。差がマイナスなら全商品と口止め料の両方は賄えません。これは全労働完遂時の上限で、通常は使い道を選ぶ必要があります。
+- 初期600＋全労働${maxMissionGb}＋定期入金最大${maxIncome}＝最大${moneyCap}GB。${maxProductCost==null?'衣装の購入数は上限なし。全商品を上限まで買う金額は定義せず、GB残高の範囲で使い道を選びます。':`全商品を上限まで買うと${maxProductCost}GB、口止め料を加えた残りは${moneyCap-maxProductCost-r.scandal.coverGb}GB。`}これは旧収入モデルの仮定例です。
 - 宣伝の直接加算は最大${maxAdFans/10000}万人＝ステージ${maxAdFans/tourFansPerPoint}点分。ツアーは100点、武道館60点。GBだけでステージ全体を覆す規模ではありません。
 - この試算には旧制度の購入が含まれます。スペシャル宣伝は2026-10-12に廃止。現行制度の比較には使いません。
 - 謝罪動画の仮範囲は−10万〜＋3万人で、最大差は13点分。口止め200GBと同額で通常宣伝4万人を買えますが、動画対応には減点リスクがあります。現行方式は口止めなら記事0本、動画なら本部の直接評価で2記事。残高と対応時間を考えて選ぶ設計です。
