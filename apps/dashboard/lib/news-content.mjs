@@ -161,6 +161,9 @@ export function editorialDraft(action, state, legacy) {
         ['定点観測中', '考察', '対応結果と実際のファン残高はダッシュボードで確認したい。残高ゼロの場合、減少には下限もある。', 19, 4],
       ].map(([author, stance, text, agree, disagree], i) => ({ id: `scandal-comment-${i + 1}`, author, stance, text, agree, disagree })),
     });
+  } else if (action.kind === 'relay_battle') {
+    const names=action.teamIds.map(id=>teams.find(t=>t.id===id)?.name||id),winner=teams.find(t=>t.id===action.winnerId)?.name||action.winnerId;
+    content=article({headline:`${winner}、労働バトルのリレーで勝利　賞金${action.rewardGb}GB`,summary:`${names.join('と')}の対戦結果を運営が確認。勝者${winner}に${action.rewardGb}GB、敗者の入金は0GB。`,paragraphs:[legacy.body,'両組の参加と勝敗を一度に記録。この記事の反応でファン数やGBを追加加算しない。運営が確認した場面を追記して公開する。'],category:'活動',illustration:'stage',teamIds:action.teamIds,teamName:winner});
   } else if (action.kind === 'collab') {
     const names = action.teamIds.map(id => teams.find(t => t.id === id)?.name || id);
     content = article({

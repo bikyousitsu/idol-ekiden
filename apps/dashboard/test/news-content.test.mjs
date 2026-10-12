@@ -1,6 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { editorialDraft, sampleArticles, scandalResultDraft, commentDraft } from '../lib/news-content.mjs';
+import { append,emptyState,calculate } from '../lib/core.mjs';
+import { withActionNews } from '../lib/news-workflow.mjs';
+
+test('リレーの記事原稿は確定した勝者・500GB・敗者0GBを示し、公開は運営確認待ち',()=>{
+ let s=append(emptyState(),{kind:'phase',value:'tour',time:'15:00'});
+ s=withActionNews(append(s,{kind:'relay_battle',teamIds:['G5','G6'],winnerId:'G6',proof:'同じ周回数でゴールを確認',time:'15:45'}));
+ const n=s.news.at(-1),c=calculate(s);assert(n.headline.includes('グループ6'));assert(n.summary.includes('500GB'));assert(n.summary.includes('0GB'));assert.deepEqual(n.teamIds,['G5','G6']);assert.equal(n.published,false);assert.equal(c.teams.find(t=>t.id==='G6').gb,1100);assert.equal(c.teams.find(t=>t.id==='G5').gb,600);
+});
 
 const team = (resolution, id = 'G1') => ({
   id, name: `架空${id}`, rank: 1, totalFans: 400000,
