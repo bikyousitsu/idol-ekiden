@@ -31,7 +31,7 @@ export function calculate(state){
   else if(a.kind==='stage'){const v=rules.venues.find(v=>v.id===a.venue);assert(v,'会場が不正です');assert(!t.stages[v.id],'この会場は採点済みです');const sc=scores(a.scores,v.maxima);t.stages[v.id]=sc;fans=sc.reduce((n,x)=>n+x,0)*10000;label=v.theme+'ステージ';}
   else if(a.kind==='mission'){const m=rules.missions.find(m=>m.id===a.missionId);assert(m,'ミッションが不正です');assert(!t.missions[m.id]&&!(m.id==='relay'&&t.missions.otagei),'この労働は受取済みです');t.missions[m.id]=true;gb=m.gb;fans=m.fans;label=m.name;}
   else if(a.kind==='collab'){assert(Array.isArray(a.teamIds)&&a.teamIds.length===2&&a.teamIds[0]!==a.teamIds[1],'異なる2組を選んでください');for(const id of a.teamIds){const c=teams[id];assert(c&&!c.missions.collab,'合同ロケは各組1回です');c.missions.collab=true;c.gb+=300;c.fans+=30000;}label='合同ロケ';}
-  else if(a.kind==='purchase'){const p=rules.products.find(p=>p.id===a.productId);assert(p,'商品が不正です');assert((t.purchases[p.id]||0)<p.max,'購入上限です');assert(!p.proofRequired||a.proof?.trim(),'成功の確認内容が必要です');assert(t.gb>=p.price,'GB残高が足りません');t.purchases[p.id]=(t.purchases[p.id]||0)+1;gb=-p.price;fans=p.fans;label=p.name;}
+  else if(a.kind==='purchase'){const p=rules.products.find(p=>p.id===a.productId)||(rules.retiredProducts||[]).find(p=>p.id===a.productId);assert(p,'商品が不正です');assert((t.purchases[p.id]||0)<p.max,'購入上限です');assert(!p.proofRequired||a.proof?.trim(),'成功の確認内容が必要です');assert(t.gb>=p.price,'GB残高が足りません');t.purchases[p.id]=(t.purchases[p.id]||0)+1;gb=-p.price;fans=p.fans;label=p.name;}
   else if(a.kind==='sns'){
    assert(['idol','fan'].includes(a.postType),'投稿の種類を選んでください');assert(a.proof?.trim(),'投稿内容・確認根拠が必要です');
    if(a.snsPolicy==='manual-v2'){
@@ -65,6 +65,7 @@ export function calculate(state){
 }
 export function append(state,input){assert(input&&typeof input==='object','操作を指定してください');assert(!state.actions.some(a=>a.id===input.id),'同じ操作は登録済みです');const current=calculate(state),a={...input,id:input.id||crypto.randomUUID(),time:input.time||current.clock},s=current.schedule;minutes(a.time);
  if(!['phase','clock','void','adjust','final','replace','schedule','scandal_plan','live_choice_open','live_choice','live_choice_correct'].includes(a.kind)){assert(current.phase==='tour','この操作はツアー中に行います');assert(minutes(a.time)<minutes(s.tradeDeadline),`取引は${s.tradeDeadline}で締切です`);}
+ if(a.kind==='purchase')assert(rules.products.some(p=>p.id===a.productId),'この商品は受付終了、または対象外です');
  if(a.kind==='purchase'&&a.productId==='costume'&&a.venue){assert(rules.venues.some(v=>v.id===a.venue),'購入会場が不正です');assert(!current.teams.find(t=>t.id===a.teamId)?.stages[a.venue],'その会場の披露は採点済みです。披露前に衣装を購入してください');}
  if(a.kind==='sns')a.snsPolicy='manual-v2';
  if(a.kind==='live_topics_start'){assert(!current.liveTopics,'お題の選択順は確定済みです');assert(current.settled&&current.scandalPublished&&(current.legacyAllScandals||current.goodwill),'スキャンダル・神対応・定期収入を先に確定してください');assert(current.teams.every(t=>Object.keys(t.stages).length===4),'全24会場の採点を照合してから順位を固定してください');a.order=selectionOrder(current.teams);a.catalog=structuredClone(rules.liveTopics?.catalog||liveTopicCandidates);a.fanSnapshot=current.teams.map(t=>({id:t.id,fans:t.totalFans}));}
