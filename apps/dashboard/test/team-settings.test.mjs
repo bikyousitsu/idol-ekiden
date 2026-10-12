@@ -11,7 +11,7 @@ import {reviseArticle} from '../lib/articles.mjs';
 const renamed=state=>state.teams.map(t=>({...t,name:t.id==='G1'?'ネオンスター':t.id==='G2'?'月光組':t.name}));
 test('名前の保存で順位・予定・スタッフ受付・LINE原稿・既存下書きが連動し、残高は保持する',()=>{
  let state=prepareScandalNews(append(emptyState(),{id:'start',kind:'phase',value:'tour',time:'15:30'}));
- state=withActionNews(append(state,{id:'joint',kind:'collab',teamIds:['G1','G2'],time:'16:00'}));
+ state=withActionNews(append(state,{id:'joint',kind:'collab_score',teamId:'G1',score:18,time:'16:00'}));
  const old=calculate(state),next=updateTeams(state,renamed(state),{now:'2026-10-12T03:00:00Z',editor:'森本'}),c=calculate(next);
  assert.equal(c.teams.find(t=>t.id==='G1').name,'ネオンスター');
  assert.equal(publicView(next).teams.find(t=>t.id==='G2').name,'月光組');

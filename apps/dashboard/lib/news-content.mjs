@@ -164,6 +164,8 @@ export function editorialDraft(action, state, legacy) {
   } else if (action.kind === 'relay_battle') {
     const names=action.teamIds.map(id=>teams.find(t=>t.id===id)?.name||id),winner=teams.find(t=>t.id===action.winnerId)?.name||action.winnerId;
     content=article({headline:`${winner}、労働バトルのリレーで勝利　賞金${action.rewardGb}GB`,summary:`${names.join('と')}の対戦結果を運営が確認。勝者${winner}に${action.rewardGb}GB、敗者の入金は0GB。`,paragraphs:[legacy.body,'両組の参加と勝敗を一度に記録。この記事の反応でファン数やGBを追加加算しない。運営が確認した場面を追記して公開する。'],category:'活動',illustration:'stage',teamIds:action.teamIds,teamName:winner});
+  } else if (action.kind === 'collab_score') {
+    content=article({headline:`${name}、合同ロケで${action.score}点　ファン${action.score}万人を獲得`,summary:`合同ロケで${name}を25点満点で個別採点。${action.score}点、ファン${action.score}万人増。GBの入金はなし。`,paragraphs:[legacy.body,'2組の共演でも評価はチームごと。相手を引き立てた場面や自分たちの見せ場を運営が確認して追記し、公開する。この記事やコメントの反応で追加加点しない。'],category:'合同ロケ',illustration:'collab',teamIds:[team.id],teamName:name});
   } else if (action.kind === 'collab') {
     const names = action.teamIds.map(id => teams.find(t => t.id === id)?.name || id);
     content = article({
@@ -233,7 +235,7 @@ export function sampleArticles() {
     {
       id: 'demo-collab', time: '15:45', headline: '【練習記事】グループ1×グループ2、合同CMで共演　最後の一言を譲れるか',
       summary: '合同ロケの練習用原稿。協力相手もライバルという組み合わせで、一つのCMをつくる場面を想定した。',
-      paragraphs: ['グループ1とグループ2が合同CMに挑む、という想定の記事。片方だけが話し続ければ、もう片方の見せ場がなくなる。互いに紹介し合い、最後の決め台詞まで一つの映像にまとめるのがロケの面白さだ。', '仮ルールの合同ロケ報酬は各組300GB・新規ファン3万人、各組一回。この練習記事の表示によって実データの報酬が増えることはない。'],
+      paragraphs: ['グループ1とグループ2が合同CMに挑む、という想定の記事。片方だけが話し続ければ、もう片方の見せ場がなくなる。互いに紹介し合い、最後の決め台詞まで一つの映像にまとめるのがロケの面白さだ。', '合同ロケは各組25点満点で個別採点。1点につきファン1万人、GBの入金はなし。この練習記事の表示で実際の点数やファン数が増えることはない。'],
       category: '合同ロケ', illustration: 'collab', teamIds: ['G1', 'G2'], teamName: 'この2組',
     },
     {
