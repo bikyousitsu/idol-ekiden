@@ -81,7 +81,7 @@ export function calculate(state){
 export function append(state,input){assert(input&&typeof input==='object','操作を指定してください');assert(!state.actions.some(a=>a.id===input.id),'同じ操作は登録済みです');const current=calculate(state),a={...input,id:input.id||crypto.randomUUID(),time:input.time||current.clock},s=current.schedule;minutes(a.time);
  if(!['phase','clock','void','adjust','final','replace','schedule','scandal_plan','live_choice_open','live_choice','live_choice_correct'].includes(a.kind)){assert(current.phase==='tour','この操作はツアー中に行います');assert(minutes(a.time)<minutes(s.tradeDeadline),`取引は${s.tradeDeadline}で締切です`);}
  if(a.kind==='purchase')assert(rules.products.some(p=>p.id===a.productId),'この商品は受付終了、または対象外です');
- if(a.kind==='purchase'&&a.productId==='costume'&&a.venue){assert(rules.venues.some(v=>v.id===a.venue),'購入会場が不正です');assert(!current.teams.find(t=>t.id===a.teamId)?.stages[a.venue],'その会場の披露は採点済みです。披露前に衣装を購入してください');}
+ if(a.kind==='purchase'&&a.productId==='costume')delete a.venue;
  if(a.kind==='sns')a.snsPolicy='manual-v2';
  if(a.kind==='collab')throw Error('固定報酬は受付終了です。「合同ロケ採点」で1組ずつ入力してください');
  if(a.kind==='settle')a.incomePolicy='disabled-v2';
